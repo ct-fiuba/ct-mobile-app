@@ -2,7 +2,9 @@ import * as Facebook from 'expo-facebook';
 
 import onSignInFacebook from './FacebookSignInFirebase';
 
-import { facebookAppId } from './keys';
+import { FACEBOOK_APP_ID } from 'react-native-dotenv'
+
+const facebookAppId = FACEBOOK_APP_ID;
 
 const signInWithFacebookAsync = async () => {
   try {
