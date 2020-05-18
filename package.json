@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "expo": "^35.0.0",
+    "expo-analytics-segment": "^8.1.0",
     "expo-facebook": "~7.0.0",
     "expo-google-app-auth": "^7.0.0",
     "expo-google-sign-in": "^8.1.0",
