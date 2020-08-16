@@ -3,7 +3,7 @@ import React from 'react';
 import { View, ActivityIndicator } from 'react-native';
 
 import API from '../../utils/Firebase';
-import styles from '../../Styles';
+import layoutStyles from '../../styles/layout';
 
 const LoadingScreen = ({ navigation }) => {
   const isUserLoggedIn = React.useCallback(() => {
@@ -19,7 +19,7 @@ const LoadingScreen = ({ navigation }) => {
   }, [isUserLoggedIn]);
 
   return (
-    <View style={styles.container}>
+    <View style={layoutStyles.center}>
       <ActivityIndicator size="large" />
     </View>
   );

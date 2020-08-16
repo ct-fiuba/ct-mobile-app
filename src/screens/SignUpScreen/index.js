@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -14,130 +14,121 @@ import * as Segment from 'expo-analytics-segment';
 
 import API from '../../utils/Firebase';
 
-import styles from './styles';
+import layoutStyles from '../../styles/layout';
+import formStyles from '../../styles/form';
 
-class SignUpScreen extends React.Component {
-  state = {
-    displayName: '',
-    email: '',
-    password: '',
-    errorMessage: '',
-    loading: false,
+function SignUpScreen({ navigation }) {
+  const [displayName, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  const onLoginSuccess = () => {
+    navigation.navigate('App');
   };
 
-  onLoginSuccess() {
-    this.props.navigation.navigate('App');
-  }
+  const onLoginFailure = errorMessage => {
+    setError(errorMessage);
+    setLoading(false);
+  };
 
-  onLoginFailure(errorMessage) {
-    this.setState({ error: errorMessage, loading: false });
-  }
-
-  renderLoading() {
-    if (this.state.loading) {
+  const renderLoading = () => {
+    if (loading) {
       return (
         <View>
           <ActivityIndicator size="large" />
         </View>
       );
     }
-  }
+  };
 
-  async signInWithEmail() {
+  const signInWithEmail = async () => {
     await API.auth()
-      .createUserWithEmailAndPassword(this.state.email, this.state.password)
-      .then(this.onLoginSuccess.bind(this))
+      .createUserWithEmailAndPassword(email, password)
+      .then(onLoginSuccess.bind(this))
       .catch(error => {
         const errorCode = error.code;
         const errorMessage = error.message;
-        if (errorCode == 'auth/weak-password') {
-          this.onLoginFailure.bind(this)('Weak Password!');
+        if (errorCode === 'auth/weak-password') {
+          onLoginFailure('Weak Password!');
         } else {
-          this.onLoginFailure.bind(this)(errorMessage);
+          onLoginFailure(errorMessage);
         }
       });
-    Segment.identify(this.state.email);
+    Segment.identify(email);
     Segment.trackWithProperties('User SignIn', {
       accountType: 'CustomEmailAuth',
-      email: this.state.email,
+      email,
     });
-  }
-
-  render() {
-    return (
-      <TouchableWithoutFeedback
-        onPress={() => {
-          Keyboard.dismiss();
-        }}
-      >
-        <SafeAreaView style={{ flex: 1 }}>
-          <KeyboardAvoidingView style={styles.container} behavior="padding">
-            <Text style={{ fontSize: 32, fontWeight: '700', color: 'gray' }}>
-              App Name
-            </Text>
-            <View style={styles.form}>
-              <TextInput
-                style={styles.input}
-                placeholder="Name"
-                placeholderTextColor="#B1B1B1"
-                returnKeyType="next"
-                textContentType="name"
-                value={this.state.displayName}
-                onChangeText={displayName => this.setState({ displayName })}
-              />
-              <TextInput
-                style={styles.input}
-                placeholder="Email"
-                placeholderTextColor="#B1B1B1"
-                returnKeyType="next"
-                keyboardType="email-address"
-                textContentType="emailAddress"
-                value={this.state.email}
-                onChangeText={email => this.setState({ email })}
-              />
-              <TextInput
-                style={styles.input}
-                placeholder="Password"
-                placeholderTextColor="#B1B1B1"
-                returnKeyType="done"
-                textContentType="newPassword"
-                secureTextEntry
-                value={this.state.password}
-                onChangeText={password => this.setState({ password })}
-              />
-            </View>
-            {this.renderLoading()}
+  };
+  return (
+    <SafeAreaView style={{ flex: 1 }}>
+      <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+        <KeyboardAvoidingView style={layoutStyles.center} behavior="padding">
+          <Text style={{ fontSize: 32, fontWeight: '700', color: 'gray' }}>
+            App Name
+          </Text>
+          <View style={formStyles.form}>
+            <TextInput
+              style={formStyles.input}
+              placeholder="Name"
+              placeholderTextColor="#B1B1B1"
+              returnKeyType="next"
+              textContentType="name"
+              value={displayName}
+              onChangeText={setName}
+            />
+            <TextInput
+              style={formStyles.input}
+              placeholder="Email"
+              placeholderTextColor="#B1B1B1"
+              returnKeyType="next"
+              keyboardType="email-address"
+              textContentType="emailAddress"
+              value={email}
+              onChangeText={setEmail}
+            />
+            <TextInput
+              style={formStyles.input}
+              placeholder="Password"
+              placeholderTextColor="#B1B1B1"
+              returnKeyType="done"
+              textContentType="newPassword"
+              secureTextEntry
+              value={password}
+              onChangeText={setPassword}
+            />
+          </View>
+          {renderLoading()}
+          <Text
+            style={{
+              fontSize: 18,
+              textAlign: 'center',
+              color: 'red',
+              width: '80%',
+            }}
+          >
+            {error}
+          </Text>
+          <TouchableOpacity
+            style={{ width: '86%', marginTop: 10 }}
+            onPress={signInWithEmail}
+          >
+            <Text>Sign Up</Text>
+          </TouchableOpacity>
+          <View style={{ marginTop: 10 }}>
             <Text
-              style={{
-                fontSize: 18,
-                textAlign: 'center',
-                color: 'red',
-                width: '80%',
-              }}
+              style={{ fontWeight: '200', fontSize: 17, textAlign: 'center' }}
+              onPress={() => navigation.navigate('LoginScreen')}
             >
-              {this.state.error}
+              Already have an account?
             </Text>
-            <TouchableOpacity
-              style={{ width: '86%', marginTop: 10 }}
-              onPress={() => this.signInWithEmail()}
-            >
-              <Text>Sign Up</Text>
-            </TouchableOpacity>
-            <View style={{ marginTop: 10 }}>
-              <Text
-                style={{ fontWeight: '200', fontSize: 17, textAlign: 'center' }}
-                onPress={() => {
-                  this.props.navigation.navigate('LoginScreen');
-                }}
-              >
-                Already have an account?
-              </Text>
-            </View>
-          </KeyboardAvoidingView>
-        </SafeAreaView>
+          </View>
+        </KeyboardAvoidingView>
       </TouchableWithoutFeedback>
-    );
-  }
+    </SafeAreaView>
+  );
 }
 
 export default SignUpScreen;
