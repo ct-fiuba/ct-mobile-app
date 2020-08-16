@@ -2,7 +2,7 @@ import { createAppContainer, createSwitchNavigator } from 'react-navigation';
 
 import API from './src/utils/Firebase';
 import { DashboardScreen, LoadingScreen, LoginScreen, SignUpScreen } from './src/screens';
-import firebaseConfig from './src/utils/config';
+import firebaseConfig from './src/utils/FirebaseConfig';
 
 API.initializeApp(firebaseConfig);
 
