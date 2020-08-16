@@ -17,7 +17,13 @@ import API from '../../utils/Firebase';
 import styles from './styles';
 
 class SignUpScreen extends React.Component {
-  state = { displayName: '', email: '', password: '', errorMessage: '', loading: false };
+  state = {
+    displayName: '',
+    email: '',
+    password: '',
+    errorMessage: '',
+    loading: false,
+  };
 
   onLoginSuccess() {
     this.props.navigation.navigate('App');
@@ -31,32 +37,30 @@ class SignUpScreen extends React.Component {
     if (this.state.loading) {
       return (
         <View>
-          <ActivityIndicator size={'large'} />
+          <ActivityIndicator size="large" />
         </View>
       );
     }
   }
 
   async signInWithEmail() {
-    await API
-      .auth()
+    await API.auth()
       .createUserWithEmailAndPassword(this.state.email, this.state.password)
       .then(this.onLoginSuccess.bind(this))
       .catch(error => {
-          let errorCode = error.code;
-          let errorMessage = error.message;
-          if (errorCode == 'auth/weak-password') {
-              this.onLoginFailure.bind(this)('Weak Password!');
-          } else {
-              this.onLoginFailure.bind(this)(errorMessage);
-          }
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        if (errorCode == 'auth/weak-password') {
+          this.onLoginFailure.bind(this)('Weak Password!');
+        } else {
+          this.onLoginFailure.bind(this)(errorMessage);
+        }
       });
-      Segment.identify(this.state.email);
-      Segment.trackWithProperties("User SignIn", {
-        accountType: "CustomEmailAuth",
-        email:this.state.email
-      });
-
+    Segment.identify(this.state.email);
+    Segment.trackWithProperties('User SignIn', {
+      accountType: 'CustomEmailAuth',
+      email: this.state.email,
+    });
   }
 
   render() {
@@ -97,7 +101,7 @@ class SignUpScreen extends React.Component {
                 placeholderTextColor="#B1B1B1"
                 returnKeyType="done"
                 textContentType="newPassword"
-                secureTextEntry={true}
+                secureTextEntry
                 value={this.state.password}
                 onChangeText={password => this.setState({ password })}
               />
@@ -108,7 +112,7 @@ class SignUpScreen extends React.Component {
                 fontSize: 18,
                 textAlign: 'center',
                 color: 'red',
-                width: '80%'
+                width: '80%',
               }}
             >
               {this.state.error}
@@ -117,7 +121,7 @@ class SignUpScreen extends React.Component {
               style={{ width: '86%', marginTop: 10 }}
               onPress={() => this.signInWithEmail()}
             >
-                <Text>Sign Up</Text>
+              <Text>Sign Up</Text>
             </TouchableOpacity>
             <View style={{ marginTop: 10 }}>
               <Text

@@ -8,46 +8,45 @@ import {
   KeyboardAvoidingView,
   ActivityIndicator,
   TouchableWithoutFeedback,
-  Keyboard
+  Keyboard,
 } from 'react-native';
 
 import signInWithGoogleAsync from '../../utils/SignInWithGoogle';
 import signInWithFacebookAsync from '../../utils/SignInWithFacebook';
 import API from '../../utils/Firebase';
 
-
 import styles from '../../Styles';
 
 class LoginScreen extends React.Component {
   state = { email: '', password: '', errorMessage: '', loading: false };
 
+  async signInWithEmail() {
+    await API.auth()
+      .signInWithEmailAndPassword(this.state.email, this.state.password)
+      .then(this.onLoginSuccess.bind(this))
+      .catch(error => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        if (errorCode == 'auth/weak-password') {
+          this.onLoginFailure.bind(this)('Weak Password!');
+        } else {
+          this.onLoginFailure.bind(this)(errorMessage);
+        }
+      });
+  }
+
   renderLoading() {
     if (this.state.loading) {
       return (
         <View>
-          <ActivityIndicator size={'large'} />
+          <ActivityIndicator size="large" />
         </View>
       );
     }
   }
 
-  async signInWithEmail() {
-    await API
-      .auth()
-      .signInWithEmailAndPassword(this.state.email, this.state.password)
-      .then(this.onLoginSuccess.bind(this))
-      .catch(error => {
-          let errorCode = error.code;
-          let errorMessage = error.message;
-          if (errorCode == 'auth/weak-password') {
-              this.onLoginFailure.bind(this)('Weak Password!');
-          } else {
-              this.onLoginFailure.bind(this)(errorMessage);
-          }
-      });
-  }
-
   render() {
+    const { email, password, error } = this.state;
     return (
       <TouchableWithoutFeedback
         onPress={() => {
@@ -56,7 +55,7 @@ class LoginScreen extends React.Component {
       >
         <SafeAreaView style={{ flex: 1 }}>
           <KeyboardAvoidingView style={styles.container} behavior="padding">
-            <Text style={{ fontSize: 32, fontWeight: "700", color: "gray" }}>
+            <Text style={{ fontSize: 32, fontWeight: '700', color: 'gray' }}>
               App Name
             </Text>
             <View style={styles.form}>
@@ -67,8 +66,8 @@ class LoginScreen extends React.Component {
                 returnKeyType="next"
                 keyboardType="email-address"
                 textContentType="emailAddress"
-                value={this.state.email}
-                onChangeText={email => this.setState({ email })}
+                value={email}
+                onChangeText={e => this.setState({ email: e })}
               />
               <TextInput
                 style={styles.input}
@@ -76,36 +75,38 @@ class LoginScreen extends React.Component {
                 placeholderTextColor="#B1B1B1"
                 returnKeyType="done"
                 textContentType="newPassword"
-                secureTextEntry={true}
-                value={this.state.password}
-                onChangeText={password => this.setState({ password })}
+                secureTextEntry
+                value={password}
+                onChangeText={p => this.setState({ password: p })}
               />
             </View>
             {this.renderLoading()}
             <Text
               style={{
                 fontSize: 18,
-                textAlign: "center",
-                color: "red",
-                width: "80%"
+                textAlign: 'center',
+                color: 'red',
+                width: '80%',
               }}
             >
-              {this.state.error}
+              {error}
             </Text>
             <TouchableOpacity
               style={{ width: '86%', marginTop: 10 }}
-              onPress={() => this.signInWithEmail()}>
-                  <Text>Sign In</Text>
+              onPress={() => this.signInWithEmail()}
+            >
+              <Text>Sign In</Text>
             </TouchableOpacity>
             <TouchableOpacity
-              style={{ width: "86%", marginTop: 10 }}
-              onPress={signInWithFacebookAsync}>
+              style={{ width: '86%', marginTop: 10 }}
+              onPress={signInWithFacebookAsync}
+            >
               <View style={styles.button}>
                 <Text
                   style={{
                     letterSpacing: 0.5,
                     fontSize: 16,
-                    color: "#FFFFFF"
+                    color: '#FFFFFF',
                   }}
                 >
                   Continue with Facebook
@@ -113,14 +114,15 @@ class LoginScreen extends React.Component {
               </View>
             </TouchableOpacity>
             <TouchableOpacity
-              style={{ width: "86%", marginTop: 10 }}
-              onPress={signInWithGoogleAsync}>
+              style={{ width: '86%', marginTop: 10 }}
+              onPress={signInWithGoogleAsync}
+            >
               <View style={styles.googleButton}>
                 <Text
                   style={{
                     letterSpacing: 0.5,
                     fontSize: 16,
-                    color: "#707070"
+                    color: '#707070',
                   }}
                 >
                   Continue with Google
@@ -129,9 +131,9 @@ class LoginScreen extends React.Component {
             </TouchableOpacity>
             <View style={{ marginTop: 10 }}>
               <Text
-                style={{ fontWeight: "200", fontSize: 17, textAlign: "center" }}
+                style={{ fontWeight: '200', fontSize: 17, textAlign: 'center' }}
                 onPress={() => {
-                  this.props.navigation.navigate("SignUpScreen");
+                  this.props.navigation.navigate('SignUpScreen');
                 }}
               >
                 Don't have an Account?

@@ -1,8 +1,7 @@
 import * as Google from 'expo-google-app-auth';
 
+import { IOS_CLIENT_ID } from 'react-native-dotenv';
 import onSignInGoogle from './GoogleSigInFirebase';
-
-import { IOS_CLIENT_ID } from 'react-native-dotenv'
 
 const iOSClientID = IOS_CLIENT_ID;
 
