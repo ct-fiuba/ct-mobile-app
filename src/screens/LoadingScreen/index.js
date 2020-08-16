@@ -2,8 +2,8 @@
 import React from 'react';
 import { View, ActivityIndicator } from 'react-native';
 
-import API from '../utils/Firebase';
-import styles from '../Styles';
+import API from '../../utils/Firebase';
+import styles from '../../Styles';
 
 const LoadingScreen = ({ navigation }) => {
   const isUserLoggedIn = React.useCallback(() => {
