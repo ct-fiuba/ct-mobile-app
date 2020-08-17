@@ -1,4 +1,4 @@
-import API from './Firebase';
+import API from '../config/firebase';
 
 const isUserEqualFacebook = (facebookAuthResponse, firebaseUser) => {
   if (firebaseUser) {

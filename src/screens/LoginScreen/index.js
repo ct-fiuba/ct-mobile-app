@@ -13,7 +13,7 @@ import {
 
 import signInWithGoogleAsync from '../../utils/SignInWithGoogle';
 import signInWithFacebookAsync from '../../utils/SignInWithFacebook';
-import API from '../../utils/Firebase';
+import API from '../../config/firebase';
 
 import layoutStyles from '../../styles/layout';
 import formStyles from '../../styles/form';
@@ -50,6 +50,7 @@ function LoginScreen({ navigation }) {
       );
     }
   };
+
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>

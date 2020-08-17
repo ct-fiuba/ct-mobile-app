@@ -12,7 +12,7 @@ import {
 } from 'react-native';
 import * as Segment from 'expo-analytics-segment';
 
-import API from '../../utils/Firebase';
+import API from '../../config/firebase';
 
 import layoutStyles from '../../styles/layout';
 import formStyles from '../../styles/form';

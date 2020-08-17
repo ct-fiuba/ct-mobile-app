@@ -1,4 +1,4 @@
-import API from './Firebase';
+import API from '../config/firebase';
 
 const isUserEqualGoogle = (googleUser, firebaseUser) => {
   if (firebaseUser) {

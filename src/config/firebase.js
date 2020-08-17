@@ -1,3 +1,4 @@
+import * as firebase from 'firebase';
 import {
   API_KEY,
   AUTH_DOMAIN,
@@ -15,3 +16,5 @@ export const firebaseConfig = {
   messagingSenderId: MESSAGE_SENDER_ID,
   appId: APP_ID,
 };
+
+export default firebase.initializeApp(firebaseConfig);

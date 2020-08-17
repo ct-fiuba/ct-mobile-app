@@ -1,7 +1,7 @@
 import * as Google from 'expo-google-app-auth';
 
 import { IOS_CLIENT_ID } from 'react-native-dotenv';
-import onSignInGoogle from './GoogleSigInFirebase';
+import { onSignInGoogle } from '../services/FirebaseService';
 
 const iOSClientID = IOS_CLIENT_ID;
 
@@ -14,7 +14,7 @@ const signInWithGoogleAsync = async () => {
     });
     if (result.type === 'success') {
       onSignInGoogle(result);
-      return result.accessToken;
+      return { token: result.accessToken };
     }
     return { cancelled: true };
   } catch (e) {
