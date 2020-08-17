@@ -1,12 +1,13 @@
 /* eslint-disable react/prop-types */
-import React from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { View, ActivityIndicator } from 'react-native';
 
-import API from '../utils/Firebase';
-import styles from '../Styles';
+import API from '../../config/firebase';
+
+import layoutStyles from '../../styles/layout';
 
 const LoadingScreen = ({ navigation }) => {
-  const isUserLoggedIn = React.useCallback(() => {
+  const isUserLoggedIn = useCallback(() => {
     API.auth().onAuthStateChanged(user =>
       user
         ? navigation.navigate('DashboardScreen')
@@ -14,12 +15,12 @@ const LoadingScreen = ({ navigation }) => {
     );
   }, [navigation]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     isUserLoggedIn();
   }, [isUserLoggedIn]);
 
   return (
-    <View style={styles.container}>
+    <View style={layoutStyles.center}>
       <ActivityIndicator size="large" />
     </View>
   );

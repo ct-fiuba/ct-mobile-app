@@ -3,7 +3,6 @@
     "name": "SimpleAuth",
     "slug": "expo-firebase-auth",
     "privacy": "public",
-    "sdkVersion": "35.0.0",
     "platforms": [
       "ios",
       "android",

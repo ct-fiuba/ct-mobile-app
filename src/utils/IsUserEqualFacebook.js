@@ -1,18 +1,17 @@
-import API from './Firebase';
+import API from '../config/firebase';
 
 const isUserEqualFacebook = (facebookAuthResponse, firebaseUser) => {
   if (firebaseUser) {
     const { providerData } = firebaseUser;
-    for (let i = 0; i < providerData.length; i++) {
+    providerData.forEach(data => {
       if (
-        providerData[i].providerId ===
-          API.auth.FacebookAuthProvider.PROVIDER_ID &&
-        providerData[i].uid === facebookAuthResponse.userID
+        data.providerId === API.auth.FacebookAuthProvider.PROVIDER_ID &&
+        data.uid === facebookAuthResponse.userID
       ) {
         // We don't need to re-auth the Firebase connection.
         return true;
       }
-    }
+    });
   }
   return false;
 };

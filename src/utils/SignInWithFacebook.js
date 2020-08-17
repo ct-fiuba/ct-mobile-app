@@ -1,8 +1,7 @@
 import * as Facebook from 'expo-facebook';
 
-import onSignInFacebook from './FacebookSignInFirebase';
-
-import { FACEBOOK_APP_ID } from 'react-native-dotenv'
+import { FACEBOOK_APP_ID } from 'react-native-dotenv';
+import { onSignInFacebook } from '../services/FirebaseService';
 
 const facebookAppId = FACEBOOK_APP_ID;
 
