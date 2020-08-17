@@ -52,7 +52,7 @@ function LoginScreen({ navigation }) {
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
-        <KeyboardAvoidingView style={styles.center} behavior="padding">
+        <KeyboardAvoidingView style={styles.center}>
           <Text style={{ fontSize: 32, fontWeight: '700', color: 'gray' }}>
             App Name
           </Text>
