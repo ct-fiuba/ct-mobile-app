@@ -23,10 +23,6 @@ function SignUpScreen({ navigation }) {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const onLoginSuccess = () => {
-    navigation.navigate('App');
-  };
-
   const onLoginFailure = errorMessage => {
     setError(errorMessage);
     setLoading(false);
@@ -45,7 +41,7 @@ function SignUpScreen({ navigation }) {
   const signInWithEmail = async () => {
     await API.auth()
       .createUserWithEmailAndPassword(email, password)
-      .then(onLoginSuccess.bind(this))
+      .then()
       .catch(error => {
         const errorCode = error.code;
         const errorMessage = error.message;

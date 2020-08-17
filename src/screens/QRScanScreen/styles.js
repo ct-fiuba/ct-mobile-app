@@ -6,10 +6,13 @@ const opacity = 'rgba(0, 0, 0, .6)';
 
 const styles = StyleSheet.create({
   barcodeContainer: {
-    justifyContent: 'flex-end',
+    alignContent: 'center',
+    width: '100%',
+    flex: 1,
   },
   barcode: {
-    flex: 1,
+    flex: 2,
+    width: '100%',
   },
   title: {
     color: '#fff',

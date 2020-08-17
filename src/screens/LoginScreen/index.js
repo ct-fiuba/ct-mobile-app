@@ -26,7 +26,7 @@ function LoginScreen({ navigation }) {
   const signInWithEmail = async () => {
     await API.auth()
       .signInWithEmailAndPassword(email, password)
-      .then(navigation.navigate('App'))
+      .then()
       .catch(e => {
         const errorCode = e.code;
         const errorMessage = e.message;
