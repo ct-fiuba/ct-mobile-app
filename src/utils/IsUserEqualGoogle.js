@@ -3,15 +3,14 @@ import API from '../config/firebase';
 const isUserEqualGoogle = (googleUser, firebaseUser) => {
   if (firebaseUser) {
     const { providerData } = firebaseUser;
-    for (let i = 0; i < providerData.length; i++) {
+    providerData.forEach(data => {
       if (
-        providerData[i].providerId ===
-          API.auth.GoogleAuthProvider.PROVIDER_ID &&
-        providerData[i].uid === googleUser.getBasicProfile().getId()
+        data.providerId === API.auth.GoogleAuthProvider.PROVIDER_ID &&
+        data.uid === googleUser.getBasicProfile().getId()
       ) {
         return true;
       }
-    }
+    });
   }
   return false;
 };
