@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { Text, StyleSheet, Button } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
 import { BarCodeScanner } from 'expo-barcode-scanner';
 import { SafeAreaView } from 'react-navigation';
 
-import layoutStyles from '../../styles/layout';
+import { TouchableOpacity } from 'react-native-gesture-handler';
+import styles from './styles';
 
-function QRScanScreen() {
+function QRScanScreen({ navigation }) {
   const [hasPermission, setHasPermission] = useState(null);
   const [scanned, setScanned] = useState(false);
 
@@ -21,21 +22,41 @@ function QRScanScreen() {
     alert(`Bar code with type ${type} and data ${data} has been scanned!`);
   };
 
-  if (hasPermission === null) {
-    return <Text>Requesting for camera permission</Text>;
-  }
-  if (hasPermission === false) {
-    return <Text>No access to camera</Text>;
-  }
+  const goBack = () => navigation.navigate('DashboardScreen');
 
   return (
-    <SafeAreaView style={layoutStyles.center}>
-      <BarCodeScanner
-        onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
-        style={StyleSheet.absoluteFillObject}
-      />
-      {scanned && (
-        <Button title="Tap to Scan Again" onPress={() => setScanned(false)} />
+    <SafeAreaView style={[styles.center, styles.barcodeContainer]}>
+      {hasPermission ? (
+        <>
+          <BarCodeScanner
+            onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
+            style={[StyleSheet.absoluteFillObject, styles.barcode]}
+          >
+            <View style={styles.layerTop}>
+              <Text style={styles.title}>Scan QR</Text>
+            </View>
+            <View style={styles.layerCenter}>
+              <View style={styles.layerLeft} />
+              <View style={styles.focused} />
+              <View style={styles.layerRight} />
+            </View>
+            <View style={styles.layerBottom}>
+              {scanned && (
+                <TouchableOpacity
+                  onPress={() => setScanned(false)}
+                  style={styles.button}
+                >
+                  <Text style={styles.buttonText}>Scan Again</Text>
+                </TouchableOpacity>
+              )}
+              <TouchableOpacity onPress={goBack} style={styles.button}>
+                <Text style={styles.buttonText}>Go back</Text>
+              </TouchableOpacity>
+            </View>
+          </BarCodeScanner>
+        </>
+      ) : (
+        <Text>No access to camera</Text>
       )}
     </SafeAreaView>
   );
