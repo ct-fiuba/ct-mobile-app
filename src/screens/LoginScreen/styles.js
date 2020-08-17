@@ -1,5 +1,8 @@
 import { StyleSheet } from 'react-native';
 
+import layoutStyles from '../../styles/layout';
+import formStyles from '../../styles/form';
+
 const styles = StyleSheet.create({
   button: {
     backgroundColor: '#3A559F',
@@ -19,6 +22,8 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#707070',
   },
+  ...layoutStyles,
+  ...formStyles,
 });
 
 export default styles;
