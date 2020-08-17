@@ -4,6 +4,7 @@ import DashboardScreen from './src/screens/DashboardScreen';
 import LoadingScreen from './src/screens/LoadingScreen';
 import LoginScreen from './src/screens/LoginScreen';
 import SignUpScreen from './src/screens/SignUpScreen';
+import QRScanScreen from './src/screens/QRScanScreen';
 
 export default createAppContainer(
   createSwitchNavigator(
@@ -12,6 +13,7 @@ export default createAppContainer(
       LoginScreen,
       SignUpScreen,
       DashboardScreen,
+      QRScanScreen,
     },
     {
       initialRouteName: 'LoadingScreen',
