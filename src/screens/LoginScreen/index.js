@@ -15,8 +15,6 @@ import signInWithGoogleAsync from '../../utils/SignInWithGoogle';
 import signInWithFacebookAsync from '../../utils/SignInWithFacebook';
 import API from '../../config/firebase';
 
-import layoutStyles from '../../styles/layout';
-import formStyles from '../../styles/form';
 import styles from './styles';
 
 function LoginScreen({ navigation }) {
@@ -54,13 +52,13 @@ function LoginScreen({ navigation }) {
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
-        <KeyboardAvoidingView style={layoutStyles.center} behavior="padding">
+        <KeyboardAvoidingView style={styles.center} behavior="padding">
           <Text style={{ fontSize: 32, fontWeight: '700', color: 'gray' }}>
             App Name
           </Text>
-          <View style={formStyles.form}>
+          <View style={styles.form}>
             <TextInput
-              style={formStyles.input}
+              style={styles.input}
               placeholder="Email"
               placeholderTextColor="#B1B1B1"
               returnKeyType="next"
@@ -70,7 +68,7 @@ function LoginScreen({ navigation }) {
               onChangeText={setEmail}
             />
             <TextInput
-              style={formStyles.input}
+              style={styles.input}
               placeholder="Password"
               placeholderTextColor="#B1B1B1"
               returnKeyType="done"
