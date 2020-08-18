@@ -23,10 +23,6 @@ function SignUpScreen({ navigation }) {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const onLoginSuccess = () => {
-    navigation.navigate('App');
-  };
-
   const onLoginFailure = errorMessage => {
     setError(errorMessage);
     setLoading(false);
@@ -45,7 +41,7 @@ function SignUpScreen({ navigation }) {
   const signInWithEmail = async () => {
     await API.auth()
       .createUserWithEmailAndPassword(email, password)
-      .then(onLoginSuccess.bind(this))
+      .then()
       .catch(error => {
         const errorCode = error.code;
         const errorMessage = error.message;
@@ -64,7 +60,7 @@ function SignUpScreen({ navigation }) {
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
-        <KeyboardAvoidingView style={styles.center} behavior="padding">
+        <KeyboardAvoidingView style={styles.center}>
           <Text style={{ fontSize: 32, fontWeight: '700', color: 'gray' }}>
             App Name
           </Text>
