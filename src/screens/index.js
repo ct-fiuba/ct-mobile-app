@@ -56,7 +56,7 @@ export default function Screens() {
   const isUserLoggedIn = useCallback(async () => {
     const savedSession = await getSessionActive();
     if (savedSession) {
-      dispatch(actionCreators.setSession(savedSession));
+      dispatch(actionCreators.setSession(JSON.parse(savedSession)));
     }
     return session !== null || savedSession
       ? setLoggedIn(true)
