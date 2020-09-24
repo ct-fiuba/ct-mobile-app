@@ -11,9 +11,11 @@ import {
   Keyboard,
 } from 'react-native';
 
-import signInWithGoogleAsync from '../../utils/SignInWithGoogle';
-import signInWithFacebookAsync from '../../utils/SignInWithFacebook';
-import API from '../../config/firebase';
+import { signIn } from '../../services/CTAuthServerService';
+import { saveSession } from '../../services/LocalStorageService';
+
+import { useDispatch } from '../../contexts/AuthContext';
+import { actionCreators } from '../../contexts/AuthContext/reducer';
 
 import styles from './styles';
 
@@ -23,20 +25,20 @@ function LoginScreen({ navigation }) {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
+  const dispatch = useDispatch();
+
   const signInWithEmail = async () => {
-    await API.auth()
-      .signInWithEmailAndPassword(email, password)
-      .then()
-      .catch(e => {
-        const errorCode = e.code;
-        const errorMessage = e.message;
-        if (errorCode === 'auth/weak-password') {
-          setError('Weak Password!');
-        } else {
-          setError(errorMessage);
-        }
-        setLoading(false);
-      });
+    setLoading(true);
+    setError('');
+    const response = await signIn(email, password);
+    console.log(response);
+    if (response.ok) {
+      saveSession(response.data);
+      dispatch(actionCreators.setSession(response.data));
+    } else {
+      setError(response.data.reason);
+    }
+    setLoading(false);
   };
 
   const renderLoading = () => {
@@ -54,7 +56,7 @@ function LoginScreen({ navigation }) {
       <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
         <KeyboardAvoidingView style={styles.center}>
           <Text style={{ fontSize: 32, fontWeight: '700', color: 'gray' }}>
-            App Name
+            Contact Tracing
           </Text>
           <View style={styles.form}>
             <TextInput
@@ -69,7 +71,7 @@ function LoginScreen({ navigation }) {
             />
             <TextInput
               style={styles.input}
-              placeholder="Password"
+              placeholder="Constraseña"
               placeholderTextColor="#B1B1B1"
               returnKeyType="done"
               textContentType="newPassword"
@@ -89,53 +91,24 @@ function LoginScreen({ navigation }) {
           >
             {error}
           </Text>
-          <TouchableOpacity
-            style={{ width: '86%', marginTop: 10 }}
-            onPress={signInWithEmail}
-          >
-            <Text>Sign In</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={{ width: '86%', marginTop: 10 }}
-            onPress={signInWithFacebookAsync}
-          >
-            <View style={styles.button}>
+          <View style={{ flexDirection: 'row' }}>
+            <TouchableOpacity style={{ margin: 10 }} onPress={signInWithEmail}>
               <Text
-                style={{
-                  letterSpacing: 0.5,
-                  fontSize: 16,
-                  color: '#FFFFFF',
+                style={{ fontWeight: '200', fontSize: 17, textAlign: 'center' }}
+              >
+                Iniciar sesión
+              </Text>
+            </TouchableOpacity>
+            <View style={{ margin: 10 }}>
+              <Text
+                style={{ fontWeight: '200', fontSize: 17, textAlign: 'center' }}
+                onPress={() => {
+                  navigation.navigate('SignUpScreen');
                 }}
               >
-                Continue with Facebook
+                Crear cuenta
               </Text>
             </View>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={{ width: '86%', marginTop: 10 }}
-            onPress={signInWithGoogleAsync}
-          >
-            <View style={styles.googleButton}>
-              <Text
-                style={{
-                  letterSpacing: 0.5,
-                  fontSize: 16,
-                  color: '#707070',
-                }}
-              >
-                Continue with Google
-              </Text>
-            </View>
-          </TouchableOpacity>
-          <View style={{ marginTop: 10 }}>
-            <Text
-              style={{ fontWeight: '200', fontSize: 17, textAlign: 'center' }}
-              onPress={() => {
-                navigation.navigate('SignUpScreen');
-              }}
-            >
-              Don't have an Account?
-            </Text>
           </View>
         </KeyboardAvoidingView>
       </TouchableWithoutFeedback>

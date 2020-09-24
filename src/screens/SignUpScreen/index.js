@@ -12,19 +12,32 @@ import {
 } from 'react-native';
 import * as Segment from 'expo-analytics-segment';
 
-import API from '../../config/firebase';
+import { signUp } from '../../services/CTAuthServerService';
+import { saveSession } from '../../services/LocalStorageService';
+
+import { useDispatch } from '../../contexts/AuthContext';
+import { actionCreators } from '../../contexts/AuthContext/reducer';
 
 import styles from './styles';
 
 function SignUpScreen({ navigation }) {
-  const [displayName, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const onLoginFailure = errorMessage => {
-    setError(errorMessage);
+  const dispatch = useDispatch();
+
+  const signUpWithEmail = async () => {
+    setLoading(true);
+    setError('');
+    const response = await signUp(email, password);
+    if (response.ok) {
+      saveSession(response.data);
+      dispatch(actionCreators.setSession(response.data));
+    } else {
+      setError(response.data.reason);
+    }
     setLoading(false);
   };
 
@@ -38,42 +51,14 @@ function SignUpScreen({ navigation }) {
     }
   };
 
-  const signInWithEmail = async () => {
-    await API.auth()
-      .createUserWithEmailAndPassword(email, password)
-      .then()
-      .catch(error => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        if (errorCode === 'auth/weak-password') {
-          onLoginFailure('Weak Password!');
-        } else {
-          onLoginFailure(errorMessage);
-        }
-      });
-    Segment.identify(email);
-    Segment.trackWithProperties('User SignIn', {
-      accountType: 'CustomEmailAuth',
-      email,
-    });
-  };
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
         <KeyboardAvoidingView style={styles.center}>
           <Text style={{ fontSize: 32, fontWeight: '700', color: 'gray' }}>
-            App Name
+            Contact Tracing
           </Text>
           <View style={styles.form}>
-            <TextInput
-              style={styles.input}
-              placeholder="Name"
-              placeholderTextColor="#B1B1B1"
-              returnKeyType="next"
-              textContentType="name"
-              value={displayName}
-              onChangeText={setName}
-            />
             <TextInput
               style={styles.input}
               placeholder="Email"
@@ -106,19 +91,22 @@ function SignUpScreen({ navigation }) {
           >
             {error}
           </Text>
-          <TouchableOpacity
-            style={{ width: '86%', marginTop: 10 }}
-            onPress={signInWithEmail}
-          >
-            <Text>Sign Up</Text>
-          </TouchableOpacity>
-          <View style={{ marginTop: 10 }}>
-            <Text
-              style={{ fontWeight: '200', fontSize: 17, textAlign: 'center' }}
-              onPress={() => navigation.navigate('LoginScreen')}
-            >
-              Already have an account?
-            </Text>
+          <View style={{ flexDirection: 'row' }}>
+            <TouchableOpacity style={{ margin: 10 }} onPress={signUpWithEmail}>
+              <Text
+                style={{ fontWeight: '200', fontSize: 17, textAlign: 'center' }}
+              >
+                Crear Cuenta
+              </Text>
+            </TouchableOpacity>
+            <View style={{ margin: 10 }}>
+              <Text
+                style={{ fontWeight: '200', fontSize: 17, textAlign: 'center' }}
+                onPress={() => navigation.navigate('LoginScreen')}
+              >
+                Ya tienes cuenta?
+              </Text>
+            </View>
           </View>
         </KeyboardAvoidingView>
       </TouchableWithoutFeedback>
