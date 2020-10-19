@@ -23,6 +23,7 @@ import styles from './styles';
 function SignUpScreen({ navigation }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [dni, setDNI] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -31,7 +32,7 @@ function SignUpScreen({ navigation }) {
   const signUpWithEmail = async () => {
     setLoading(true);
     setError('');
-    const response = await signUp(email, password);
+    const response = await signUp(email, dni, password);
     if (response.ok) {
       saveSession(response.data);
       dispatch(actionCreators.setSession(response.data));
@@ -68,6 +69,14 @@ function SignUpScreen({ navigation }) {
               textContentType="emailAddress"
               value={email}
               onChangeText={setEmail}
+            />
+            <TextInput
+              style={styles.input}
+              placeholder="DNI"
+              placeholderTextColor="#B1B1B1"
+              returnKeyType="next"
+              value={dni}
+              onChangeText={setDNI}
             />
             <TextInput
               style={styles.input}

@@ -9,5 +9,5 @@ const authApi = create({
 export const signIn = (email, password) =>
   authApi.post('/signIn', { email, password });
 
-export const signUp = (email, password) =>
-  authApi.post('/signUp', { email, password });
+export const signUp = (email, dni, password) =>
+  authApi.post('/signUp', { email, DNI: dni, password });
