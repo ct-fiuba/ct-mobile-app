@@ -16,10 +16,11 @@ export const getAccessToken = async () => {
 };
 
 export const saveScan = async scanCode => {
-  const keyDate = new Date().toISOString().slice(0, 10);
+  const timestamp = new Date();
+  const keyDate = timestamp.toISOString().slice(0, 10);
   const value = {
     code: scanCode,
-    timestamp: new Date(),
+    timestamp,
     id: uuidv4(),
   };
   AsyncStorage.getItem(keyDate).then(scans => {
