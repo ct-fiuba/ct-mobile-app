@@ -1,4 +1,6 @@
 import { AsyncStorage } from 'react-native';
+import 'react-native-get-random-values';
+import { v4 as uuidv4 } from 'uuid';
 
 export const saveSession = session =>
   AsyncStorage.setItem('session', JSON.stringify(session));
@@ -24,10 +26,10 @@ export const saveScan = async scanCode => {
   const value = {
     code: scanCode,
     timestamp: new Date(),
-    id: getuuid(),
+    id: uuidv4(),
   };
+  console.log('VALUE ES', value);
   AsyncStorage.getItem(keyDate).then(scans => {
-    console.log(scans);
     const scansParsed = scans ? JSON.parse(scans) : [];
     scansParsed.push(value);
     AsyncStorage.setItem(keyDate, JSON.stringify(scansParsed));
