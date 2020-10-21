@@ -1,8 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, SafeAreaView } from 'react-native';
 import { Camera } from 'expo-camera';
-
 import { TouchableOpacity } from 'react-native-gesture-handler';
+
+import { withGenuxToken } from '../../services/CTAuthServerService';
+import { saveScan } from '../../services/LocalStorageService';
+
 import styles from './styles';
 
 function QRScanScreen() {
@@ -16,9 +19,10 @@ function QRScanScreen() {
     })();
   }, []);
 
-  const handleBarCodeScanned = ({ type, data }) => {
+  const handleBarCodeScanned = ({ data }) => {
     setScanned(true);
-    alert(`Bar code with type ${type} and data ${data} has been scanned!`);
+    withGenuxToken(genuxToken => console.log('GENUX TOKEN ES', genuxToken));
+    saveScan(data);
   };
 
   return (
