@@ -21,7 +21,7 @@ function QRScanScreen() {
 
   const handleBarCodeScanned = ({ data }) => {
     setScanned(true);
-    withGenuxToken(genuxToken => console.log('GENUX TOKEN ES', genuxToken));
+    withGenuxToken(genuxToken => console.log('GENUX TOKEN ES', genuxToken)); // TODO: Add userApi endpoint to scan visit
     saveScan(data);
   };
 
