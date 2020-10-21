@@ -22,7 +22,6 @@ export const saveScan = async scanCode => {
     timestamp: new Date(),
     id: uuidv4(),
   };
-  console.log('VALUE ES', value);
   AsyncStorage.getItem(keyDate).then(scans => {
     const scansParsed = scans ? JSON.parse(scans) : [];
     scansParsed.push(value);
