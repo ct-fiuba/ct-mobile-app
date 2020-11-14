@@ -6,7 +6,7 @@ import { scan } from '../../services/ScanService';
 
 import styles from './styles';
 
-function QRScanScreen() {
+function QRScanScreen({ navigation }) {
   const [hasPermission, setHasPermission] = useState(null);
   const [scanned, setScanned] = useState(false);
 
@@ -31,7 +31,7 @@ function QRScanScreen() {
         {
           text: 'Volver al inicio',
           onPress: () => {
-            // redirect
+            navigation.navigate('Home');
           },
         },
       ],
