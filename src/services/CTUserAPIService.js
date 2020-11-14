@@ -13,6 +13,5 @@ export const saveVisit = visitInfo => async genuxToken => {
   const response = await userApi.post('/visits', visitInfo, {
     headers: { 'genux-token': genuxToken },
   });
-  console.log('ACA RESPONSE ES', response);
   return response;
 };

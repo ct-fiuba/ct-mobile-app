@@ -12,7 +12,6 @@ export const actionCreators = {
 export const reducer = (state, action) => {
   switch (action.type) {
     case 'SET_SESSION': {
-      // console.log(action.payload.accessToken);
       setAccessToken(action.payload.accessToken);
       return { ...state, session: action.payload };
     }
