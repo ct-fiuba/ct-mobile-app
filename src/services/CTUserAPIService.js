@@ -9,9 +9,7 @@ const userApi = create({
 export const setAccessToken = accessToken =>
   userApi.setHeader('access-token', accessToken);
 
-export const saveVisit = visitInfo => async genuxToken => {
-  const response = await userApi.post('/visits', visitInfo, {
+export const saveVisit = visitInfo => async genuxToken =>
+  userApi.post('/visits', visitInfo, {
     headers: { 'genux-token': genuxToken },
   });
-  return response;
-};
