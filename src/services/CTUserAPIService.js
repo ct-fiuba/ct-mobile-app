@@ -16,5 +16,3 @@ export const saveVisit = visitInfo => async genuxToken => {
   console.log('ACA RESPONSE ES', response);
   return response;
 };
-
-console.log('aca');

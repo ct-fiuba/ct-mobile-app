@@ -23,5 +23,3 @@ export const withGenuxToken = async request => {
   }
   return response;
 };
-
-console.log('aca');

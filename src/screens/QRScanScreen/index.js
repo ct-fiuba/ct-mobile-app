@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, SafeAreaView } from 'react-native';
+import { View, Text, StyleSheet, SafeAreaView, Alert } from 'react-native';
 import { Camera } from 'expo-camera';
-import { TouchableOpacity } from 'react-native-gesture-handler';
 
 import { scan } from '../../services/ScanService';
 
@@ -18,9 +17,36 @@ function QRScanScreen() {
     })();
   }, []);
 
-  const handleBarCodeScanned = ({ data }) => {
+  const openAlert = (title, message) => {
+    Alert.alert(
+      title,
+      message,
+      [
+        {
+          text: 'Volver a escanear',
+          onPress: () => {
+            setScanned(false);
+          },
+        },
+        {
+          text: 'Volver al inicio',
+          onPress: () => {
+            // redirect
+          },
+        },
+      ],
+      { cancelable: false }
+    );
+  };
+
+  const handleBarCodeScanned = async ({ data }) => {
     setScanned(true);
-    scan(data);
+    const response = await scan(data);
+    if (response.ok) {
+      openAlert('Exito', 'La visita se guardó exitosamente');
+    } else {
+      openAlert('Error', response.data.reason);
+    }
   };
 
   return (
@@ -38,16 +64,7 @@ function QRScanScreen() {
             <View style={styles.focused} />
             <View style={styles.layerRight} />
           </View>
-          <View style={styles.layerBottom}>
-            {scanned && (
-              <TouchableOpacity
-                onPress={() => setScanned(false)}
-                style={styles.button}
-              >
-                <Text style={styles.buttonText}>Scan Again</Text>
-              </TouchableOpacity>
-            )}
-          </View>
+          <View style={styles.layerBottom}></View>
         </Camera>
       ) : (
         <Text>No access to camera</Text>

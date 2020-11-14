@@ -11,6 +11,6 @@ export const scan = scanCode => {
     timestamp,
     userGeneratedCode: uuidv4(),
   };
-  withGenuxToken(saveVisit(value));
   saveScan(value);
+  return withGenuxToken(saveVisit(value));
 };
