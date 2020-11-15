@@ -31,7 +31,6 @@ function LoginScreen({ navigation }) {
     setLoading(true);
     setError('');
     const response = await signIn(email, password);
-    console.log(response);
     if (response.ok) {
       saveSession(response.data);
       dispatch(actionCreators.setSession(response.data));

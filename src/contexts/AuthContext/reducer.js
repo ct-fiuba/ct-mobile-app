@@ -1,3 +1,5 @@
+import { setAccessToken } from '../../services/CTUserAPIService';
+
 export const INITIAL_STATE = {
   session: null,
 };
@@ -10,6 +12,7 @@ export const actionCreators = {
 export const reducer = (state, action) => {
   switch (action.type) {
     case 'SET_SESSION': {
+      setAccessToken(action.payload.accessToken);
       return { ...state, session: action.payload };
     }
     case 'RESET_SESSION': {
