@@ -10,7 +10,6 @@ import {
   Keyboard,
   TouchableWithoutFeedback,
 } from 'react-native';
-import * as Segment from 'expo-analytics-segment';
 
 import { signUp } from '../../services/CTAuthServerService';
 import { saveSession } from '../../services/LocalStorageService';
@@ -32,14 +31,13 @@ function SignUpScreen({ navigation }) {
   const signUpWithEmail = async () => {
     setLoading(true);
     setError('');
-    const response = await signUp(email, dni, password);
-    if (response.ok) {
-      saveSession(response.data);
-      dispatch(actionCreators.setSession(response.data));
-    } else {
-      setError(response.data.reason);
-    }
-    setLoading(false);
+    signUp(email, dni, password)
+      .then(response => {
+        saveSession(response.data);
+        dispatch(actionCreators.setSession(response.data));
+      })
+      .catch(error => setError(error.response.data.reason))
+      .finally(() => setLoading(false));
   };
 
   const renderLoading = () => {

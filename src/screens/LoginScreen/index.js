@@ -30,14 +30,13 @@ function LoginScreen({ navigation }) {
   const signInWithEmail = async () => {
     setLoading(true);
     setError('');
-    const response = await signIn(email, password);
-    if (response.ok) {
-      saveSession(response.data);
-      dispatch(actionCreators.setSession(response.data));
-    } else {
-      setError(response.data.reason);
-    }
-    setLoading(false);
+    signIn(email, password)
+      .then(response => {
+        saveSession(response.data);
+        dispatch(actionCreators.setSession(response.data));
+      })
+      .catch(error => setError(error.response.data.reason))
+      .finally(() => setLoading(false));
   };
 
   const renderLoading = () => {

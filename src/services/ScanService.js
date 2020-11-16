@@ -11,9 +11,10 @@ export const scan = async scanCode => {
     timestamp,
     userGeneratedCode: uuidv4(),
   };
-  const response = await withGenuxToken(saveVisit(value));
-  if (response.ok) {
-    saveScan(value);
-  }
-  return response;
+  return withGenuxToken(saveVisit(value))
+    .then(res => {
+      saveScan(value);
+      return res;
+    })
+    .catch(error => error.response);
 };

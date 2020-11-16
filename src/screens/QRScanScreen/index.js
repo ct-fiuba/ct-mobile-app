@@ -41,12 +41,9 @@ function QRScanScreen({ navigation }) {
 
   const handleBarCodeScanned = async ({ data }) => {
     setScanned(true);
-    const response = await scan(data);
-    if (response.ok) {
-      openAlert('Exito', 'La visita se guardó exitosamente');
-    } else {
-      openAlert('Error', response.data.reason);
-    }
+    scan(data)
+      .then(_res => openAlert('Exito', 'La visita se guardó exitosamente'))
+      .catch(error => openAlert('Error', error.response.data.reason));
   };
 
   return (
