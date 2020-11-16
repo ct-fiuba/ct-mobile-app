@@ -23,10 +23,13 @@ export const refreshAccessToken = refreshToken =>
 
 export const withGenuxToken = async request => {
   const accessToken = await getAccessToken();
-  return authApi.post('/generateGenuxToken', { accessToken }).then(response => {
-    const { genuxToken } = response.data;
-    return request(genuxToken);
-  });
+  return authApi
+    .post('/generateGenuxToken', { accessToken })
+    .then(response => {
+      const { genuxToken } = response.data;
+      return request(genuxToken);
+    })
+    .catch(error => error.response);
 };
 
 authApi.interceptors.response.use(null, async error => {
