@@ -40,7 +40,6 @@ authApi.interceptors.response.use(null, async error => {
           ...error.config.data,
           accessToken: refreshResponse.data.accessToken,
         };
-        console.log(error.config);
         return authApi.request(error.config);
       })
       .catch(refreshError => Promise.reject(refreshError));

@@ -9,9 +9,7 @@ const userApi = axios.create({
 });
 
 userApi.interceptors.response.use(null, async error => {
-  console.log(error);
   if (error.config && error.response && error.response.status === 401) {
-    console.log('aca');
     const session = await getSessionActive();
     return refreshAccessToken(JSON.parse(session).refreshToken).then(
       refreshResponse => {
