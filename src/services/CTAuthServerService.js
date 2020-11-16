@@ -39,10 +39,7 @@ authApi.interceptors.response.use(null, async error => {
     return refreshAccessToken(JSON.parse(session).refreshToken)
       .then(refreshResponse => {
         saveSession(refreshResponse.data);
-        error.config.data = {
-          ...error.config.data,
-          accessToken: refreshResponse.data.accessToken,
-        };
+        error.config.data.accessToken = refreshResponse.data.accessToken;
         return authApi.request(error.config);
       })
       .catch(refreshError => Promise.reject(refreshError));
