@@ -10,8 +10,8 @@ import layoutStyles from '../../styles/layout';
 function DashboardScreen() {
   const dispatch = useDispatch();
 
-  const signOut = useCallback(() => {
-    removeSession();
+  const signOut = useCallback(async () => {
+    await removeSession();
     dispatch(actionCreators.resetSession());
   }, [dispatch]);
   return (
