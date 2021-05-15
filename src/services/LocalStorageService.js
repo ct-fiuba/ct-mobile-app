@@ -1,6 +1,6 @@
 import { AsyncStorage } from 'react-native';
 
-const SCAN_WINDOW = 14;
+const SCAN_WINDOW = 14; // Scan window in days to fetch codes from local storage
 
 export const saveSession = session =>
   AsyncStorage.setItem('session', JSON.stringify(session));
