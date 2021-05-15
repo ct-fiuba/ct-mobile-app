@@ -7,6 +7,7 @@ import { actionCreators } from '../../contexts/AuthContext/reducer';
 import { removeSession, getCodes } from '../../services/LocalStorageService';
 import { sendCodes } from '../../services/CTUserAPIService';
 import layoutStyles from '../../styles/layout';
+import RiskStatus from '../../components/RiskStatus';
 
 function DashboardScreen() {
   const dispatch = useDispatch();
@@ -39,6 +40,7 @@ function DashboardScreen() {
   }, [dispatch]);
   return (
     <SafeAreaView style={layoutStyles.center}>
+      <RiskStatus risk="low" />
       <Button onPress={exposeCodes} title="Compartir códigos" />
       <Button onPress={signOut} title="Sign Out" />
     </SafeAreaView>
