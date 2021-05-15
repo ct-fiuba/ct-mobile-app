@@ -2,7 +2,7 @@ import { CT_USER_API_URI } from 'react-native-dotenv';
 
 import axios from 'axios';
 import { getSessionActive, saveSession } from './LocalStorageService';
-import { refreshAccessToken } from './CTAuthServerService';
+import { refreshAccessToken, withGenuxToken } from './CTAuthServerService';
 
 const userApi = axios.create({
   baseURL: CT_USER_API_URI,
@@ -30,3 +30,18 @@ export const saveVisit = visitInfo => async genuxToken =>
   userApi.post('/visits', visitInfo, {
     headers: { 'genux-token': genuxToken },
   });
+
+export const sendCodes = codes =>
+  Promise.all(
+    codes.map(code =>
+      withGenuxToken(genuxToken =>
+        userApi.post(
+          '/infected',
+          { userGeneratedCode: code.userGeneratedCode },
+          {
+            headers: { 'genux-token': genuxToken },
+          }
+        )
+      )
+    )
+  );
