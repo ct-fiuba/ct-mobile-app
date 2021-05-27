@@ -13,10 +13,10 @@ const authApi = axios.create({
 });
 
 export const signIn = (email, password) =>
-  authApi.post('/signIn', { email, password });
+  authApi.post('/users/signIn', { email, password });
 
 export const signUp = (email, dni, password) =>
-  authApi.post('/signUp', { email, DNI: dni, password });
+  authApi.post('/users/signUp', { email, DNI: dni, password });
 
 export const refreshAccessToken = refreshToken =>
   authApi.post('/refreshToken', { refreshToken });
