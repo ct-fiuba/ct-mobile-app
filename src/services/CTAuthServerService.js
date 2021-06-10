@@ -13,7 +13,7 @@ const authApi = axios.create({
 });
 
 export const signIn = (email, password) =>
-  authApi.post('/users/signIn', { email, password });
+  authApi.post('/users/login', { email, password });
 
 export const signUp = (email, dni, password) =>
   authApi.post('/users/signUp', { email, DNI: dni, password });
