@@ -4,6 +4,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 import DashboardScreen from './DashboardScreen';
+import ProfileScreen from './ProfileScreen';
 // import LoadingScreen from '../screens/LoadingScreen';
 import LoginScreen from './LoginScreen';
 import SignUpScreen from './SignUpScreen';
@@ -39,6 +40,16 @@ function TabNavigatorScreen() {
         options={{
           tabBarIcon: ({ focused, size }) => (
             <TabBarIcon name="md-qr-scanner" focused={focused} size={size} />
+          ),
+          unmountOnBlur: true,
+        }}
+      />
+      <Tab.Screen
+        name="Profile"
+        component={ProfileScreen}
+        options={{
+          tabBarIcon: ({ focused, size }) => (
+            <TabBarIcon name="md-person" focused={focused} size={size} />
           ),
           unmountOnBlur: true,
         }}
