@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text } from 'react-native';
+import { View, Text, Platform } from 'react-native';
 import {
   setStatusBarBackgroundColor,
   setStatusBarStyle,
@@ -9,8 +9,11 @@ import { RISK_INFO } from './constants';
 import styles from './styles';
 
 export default function RiskStatus({ risk }) {
-  setStatusBarBackgroundColor(RISK_INFO[risk].color);
-  setStatusBarStyle('auto');
+  if (Platform.OS === 'android') {
+    setStatusBarBackgroundColor(RISK_INFO[risk].color);
+    setStatusBarStyle('auto');
+  }
+
   return (
     <View style={[styles.common, styles[risk]]}>
       <Text
