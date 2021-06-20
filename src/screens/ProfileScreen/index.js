@@ -1,6 +1,11 @@
+/* eslint-disable react/style-prop-object */
 import React, { useState, useCallback, useEffect } from 'react';
 import { View, Switch, SafeAreaView } from 'react-native';
 import { Button, Select, Text, Icon } from 'react-native-magnus';
+import {
+  setStatusBarBackgroundColor,
+  setStatusBarStyle,
+} from 'expo-status-bar';
 
 import ModalDatePicker from '../../components/ModalDatePicker';
 
@@ -11,6 +16,8 @@ import styles from './styles';
 import { VACCINES } from './constants';
 
 function ProfileScreen() {
+  setStatusBarBackgroundColor('blue');
+  setStatusBarStyle('inverted');
   const [editable, setEditable] = useState(false);
   const [vaccinated, setVaccinated] = useState(false);
   const [vaccine, setVaccine] = useState(null);

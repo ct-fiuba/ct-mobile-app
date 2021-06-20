@@ -32,6 +32,7 @@ function TabNavigatorScreen() {
           tabBarIcon: ({ focused, size }) => (
             <TabBarIcon name="md-home" focused={focused} size={size} />
           ),
+          unmountOnBlur: true,
         }}
       />
       <Tab.Screen
@@ -51,6 +52,7 @@ function TabNavigatorScreen() {
           tabBarIcon: ({ focused, size }) => (
             <TabBarIcon name="md-person" focused={focused} size={size} />
           ),
+          unmountOnBlur: true,
         }}
       />
     </Tab.Navigator>
