@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { View, Switch } from 'react-native';
+import React, { useState, useCallback } from 'react';
+import { View, Switch, SafeAreaView } from 'react-native';
 import { Button, Select, Text, Icon } from 'react-native-magnus';
 
 import ModalDatePicker from '../../components/ModalDatePicker';
@@ -28,24 +28,41 @@ function ProfileScreen() {
   const beenInfectedState = useToggleState();
   const [medicalDischargeDate, setMedicalDischargeDate] = useState('');
   const [visibleDate, setVisibleDate] = useState(false);
+  const [visibleDoseDate, setVisibleDoseDate] = useState(false);
+  const [lastDoseDate, setLastDoseDate] = useState('');
 
-  const onDateConfirmed = date => {
+  const onDateConfirmed = useCallback(date => {
+    setVisibleDate(false);
     setMedicalDischargeDate(
-      `${date.getDate()}-${date.getMonth() + 1}-${date.getFullYear()}`
+      `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`
     );
-    setVisibleDate(false);
-  };
+  }, []);
 
-  const onDateCancel = () => {
-    setMedicalDischargeDate('');
+  const onDateCancel = useCallback(() => {
     setVisibleDate(false);
-  };
+    setMedicalDischargeDate('');
+  }, []);
+
+  const onDoseDateConfirmed = useCallback(date => {
+    setVisibleDoseDate(false);
+    setLastDoseDate(
+      `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`
+    );
+  }, []);
+
+  const onDoseDateCancel = useCallback(() => {
+    setVisibleDoseDate(false);
+    setLastDoseDate('');
+  }, []);
 
   return (
     <View>
       <View style={styles.header}>
-        <Text style={styles.name}>Olivia Fernandez</Text>
-        <Text style={styles.email}>olifer97@gmail.com</Text>
+        <SafeAreaView style={styles.headerContent}>
+          <Text style={styles.name}>Olivia Fernandez</Text>
+          <Text style={styles.small}>olifer97@gmail.com</Text>
+          <Text style={styles.small}>40.244.911</Text>
+        </SafeAreaView>
       </View>
       <View style={styles.user}>
         <View style={styles.wrap}>
@@ -108,8 +125,6 @@ function ProfileScreen() {
                   ref={vaccineRef}
                   value={vaccine && vaccine.name}
                   title="Elija la vacuna"
-                  mt="md"
-                  pb="2xl"
                   roundedTop="xl"
                   data={VACCINES}
                   renderItem={item => (
@@ -123,6 +138,7 @@ function ProfileScreen() {
                 <View style={styles.wrap}>
                   <Text>Dosis:</Text>
                   <Button
+                    mb={10}
                     borderWidth={1}
                     bg="white"
                     color="gray900"
@@ -143,8 +159,6 @@ function ProfileScreen() {
                   ref={doseRef}
                   value={vaccine && vaccine.name}
                   title="¿Cuantas dosis se dió?"
-                  mt="md"
-                  pb="2xl"
                   roundedTop="xl"
                   data={[1, 2]}
                   renderItem={item => (
@@ -152,6 +166,33 @@ function ProfileScreen() {
                       <Text>{item}</Text>
                     </Select.Option>
                   )}
+                />
+              </View>
+              <View>
+                <View style={styles.wrap}>
+                  <Text>{'Fecha de\núltima dosis:'}</Text>
+                  <Button
+                    borderWidth={1}
+                    bg="white"
+                    color="gray900"
+                    borderColor="gray300"
+                    onPress={() => {
+                      setVisibleDoseDate(true);
+                    }}
+                    disabled={!editable}
+                  >
+                    {lastDoseDate || 'No especifica'}
+                  </Button>
+                </View>
+
+                <ModalDatePicker
+                  id="lastDose"
+                  visible={visibleDoseDate}
+                  onConfirm={onDoseDateConfirmed}
+                  onCancel={onDoseDateCancel}
+                  value={lastDoseDate}
+                  confirmText="Confirmar"
+                  cancelText="Cancelar"
                 />
               </View>
             </View>
@@ -187,6 +228,7 @@ function ProfileScreen() {
               </View>
 
               <ModalDatePicker
+                id="medicalDischarge"
                 visible={visibleDate}
                 onConfirm={onDateConfirmed}
                 onCancel={onDateCancel}

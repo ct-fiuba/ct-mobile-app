@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react';
-import { SafeAreaView, Alert } from 'react-native';
+import { View, Alert } from 'react-native';
 import { FlatGrid } from 'react-native-super-grid';
 
 import { useDispatch } from '../../contexts/AuthContext';
@@ -42,20 +42,22 @@ function DashboardScreen() {
     dispatch(actionCreators.resetSession());
   }, [dispatch]);
   return (
-    <SafeAreaView style={styles.center}>
+    <View>
       <RiskStatus risk="high" />
-      <FlatGrid
-        itemDimension={110}
-        style={styles.actionables}
-        data={[
-          { onPress: exposeCodes, title: 'Compartir codigos', icon: 'share' },
-          { onPress: signOut, title: 'Salir', icon: 'logout' },
-        ]}
-        renderItem={({ item: { onPress, title, icon } }) => (
-          <ActionableCard onPress={onPress} title={title} icon={icon} />
-        )}
-      />
-    </SafeAreaView>
+      <View style={styles.center}>
+        <FlatGrid
+          itemDimension={110}
+          style={styles.actionables}
+          data={[
+            { onPress: exposeCodes, title: 'Compartir codigos', icon: 'share' },
+            { onPress: signOut, title: 'Salir', icon: 'logout' },
+          ]}
+          renderItem={({ item: { onPress, title, icon } }) => (
+            <ActionableCard onPress={onPress} title={title} icon={icon} />
+          )}
+        />
+      </View>
+    </View>
   );
 }
 

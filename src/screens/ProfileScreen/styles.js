@@ -6,6 +6,9 @@ const styles = StyleSheet.create({
     borderBottomEndRadius: 50,
     borderBottomStartRadius: 50,
     backgroundColor: 'blue',
+    justifyContent: 'center',
+  },
+  headerContent: {
     alignContent: 'center',
     justifyContent: 'center',
     alignItems: 'center',
@@ -16,8 +19,9 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     color: 'white',
   },
-  email: {
+  small: {
     color: 'white',
+    marginBottom: 5,
   },
   user: {
     alignContent: 'center',

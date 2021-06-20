@@ -12,10 +12,6 @@ const authApi = axios.create({
   baseURL: CT_AUTH_SERVER_URI,
 });
 
-console.log(CT_AUTH_SERVER_URI);
-console.log('dale la concha de la lora');
-console.log('dale la concha de la lora');
-
 export const signIn = (email, password) =>
   authApi.post('/signIn', { email, password });
 
