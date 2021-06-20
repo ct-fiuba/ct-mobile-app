@@ -1,35 +1,54 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { View, Switch, SafeAreaView } from 'react-native';
 import { Button, Select, Text, Icon } from 'react-native-magnus';
 
 import ModalDatePicker from '../../components/ModalDatePicker';
 
+import { getUserInfo, saveUserInfo } from '../../services/LocalStorageService';
+
 import styles from './styles';
 
 import { VACCINES } from './constants';
 
-const useToggleState = (initialState = false) => {
-  const [checked, setChecked] = React.useState(initialState);
-
-  const onCheckedChange = isChecked => {
-    setChecked(isChecked);
-  };
-
-  return { checked, onChange: onCheckedChange };
-};
-
 function ProfileScreen() {
   const [editable, setEditable] = useState(false);
-  const vaccinatedState = useToggleState();
+  const [vaccinated, setVaccinated] = useState(false);
   const [vaccine, setVaccine] = useState(null);
   const [dose, setDose] = useState(1);
   const vaccineRef = React.createRef();
   const doseRef = React.createRef();
-  const beenInfectedState = useToggleState();
+  const [beenInfected, setBeenInfected] = useState(false);
   const [medicalDischargeDate, setMedicalDischargeDate] = useState('');
   const [visibleDate, setVisibleDate] = useState(false);
   const [visibleDoseDate, setVisibleDoseDate] = useState(false);
   const [lastDoseDate, setLastDoseDate] = useState('');
+
+  useEffect(() => {
+    async function fetchData() {
+      const userInfo = await getUserInfo();
+      if (userInfo) {
+        setVaccinated(userInfo.vaccinated);
+        setVaccine(userInfo.vaccine);
+        setDose(userInfo.dose);
+        setBeenInfected(userInfo.beenInfected);
+        setMedicalDischargeDate(userInfo.medicalDischargeDate);
+        setLastDoseDate(userInfo.lastDoseDate);
+      }
+    }
+    fetchData();
+  }, []);
+
+  const onSave = async () => {
+    const userInfo = {
+      vaccinated,
+      vaccine,
+      dose,
+      beenInfected,
+      medicalDischargeDate,
+      lastDoseDate,
+    };
+    await saveUserInfo(userInfo);
+  };
 
   const onDateConfirmed = useCallback(date => {
     setVisibleDate(false);
@@ -72,7 +91,10 @@ function ProfileScreen() {
           <Button
             bg="transparent"
             rounded="circle"
-            onPress={() => {
+            onPress={async () => {
+              if (editable) {
+                await onSave();
+              }
               setEditable(!editable);
             }}
           >
@@ -93,12 +115,12 @@ function ProfileScreen() {
             <Switch
               trackColor={{ false: '#767577', true: '#81b0ff' }}
               style={styles.toggle}
-              onValueChange={vaccinatedState.onChange}
-              value={vaccinatedState.checked}
+              onValueChange={setVaccinated}
+              value={vaccinated}
               disabled={!editable}
             />
           </View>
-          {vaccinatedState.checked && (
+          {vaccinated && (
             <View>
               <View>
                 <View style={styles.wrap}>
@@ -204,12 +226,12 @@ function ProfileScreen() {
             <Switch
               trackColor={{ false: '#767577', true: '#81b0ff' }}
               style={styles.toggle}
-              onValueChange={beenInfectedState.onChange}
-              value={beenInfectedState.checked}
+              onValueChange={setBeenInfected}
+              value={beenInfected}
               disabled={!editable}
             />
           </View>
-          {beenInfectedState.checked && (
+          {beenInfected && (
             <View>
               <View style={styles.wrap}>
                 <Text>Fecha de alta:</Text>

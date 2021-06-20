@@ -51,7 +51,6 @@ function TabNavigatorScreen() {
           tabBarIcon: ({ focused, size }) => (
             <TabBarIcon name="md-person" focused={focused} size={size} />
           ),
-          unmountOnBlur: true,
         }}
       />
     </Tab.Navigator>

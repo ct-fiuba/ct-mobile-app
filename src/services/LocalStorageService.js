@@ -15,6 +15,15 @@ export const getAccessToken = async () => {
   return accessToken;
 };
 
+export const saveUserInfo = info => {
+  AsyncStorage.setItem('ct-user', JSON.stringify(info));
+};
+
+export const getUserInfo = async () => {
+  const data = await AsyncStorage.getItem('ct-user');
+  return data ? JSON.parse(data) : {};
+};
+
 export const saveScan = scan => {
   const keyDate = scan.timestamp.toISOString().slice(0, 10);
   AsyncStorage.getItem(keyDate).then(scans => {
