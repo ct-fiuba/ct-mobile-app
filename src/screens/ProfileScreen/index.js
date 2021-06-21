@@ -120,7 +120,7 @@ function ProfileScreen() {
         <View style={styles.form}>
           <View style={styles.wrap}>
             <Text fontWeight="bold" fontSize={15}>
-              ¿Esta Vacunado?
+              ¿Está Vacunado?
             </Text>
             <Switch
               trackColor={{ false: '#767577', true: '#81b0ff' }}
