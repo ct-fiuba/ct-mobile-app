@@ -31,7 +31,7 @@ function QRScanScreen({ navigation }) {
         {
           text: 'Volver al inicio',
           onPress: () => {
-            navigation.navigate('Home');
+            navigation.navigate('Inicio');
           },
         },
       ],
@@ -54,7 +54,7 @@ function QRScanScreen({ navigation }) {
           style={[StyleSheet.absoluteFillObject, styles.barcode]}
         >
           <View style={styles.layerTop}>
-            <Text style={styles.title}>Scan QR</Text>
+            <Text style={styles.title}>Escanear QR</Text>
           </View>
           <View style={styles.layerCenter}>
             <View style={styles.layerLeft} />

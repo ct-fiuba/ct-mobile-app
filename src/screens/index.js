@@ -24,19 +24,20 @@ function TabNavigatorScreen() {
         activeTintColor: 'blue',
         inactiveTintColor: 'gray',
       }}
+      initialRouteName="Escanear"
     >
       <Tab.Screen
-        name="Home"
+        name="Inicio"
         component={DashboardScreen}
         options={{
           tabBarIcon: ({ focused, size }) => (
             <TabBarIcon name="md-home" focused={focused} size={size} />
           ),
-          unmountOnBlur: true,
+          unmountOnBlur: false,
         }}
       />
       <Tab.Screen
-        name="Scan"
+        name="Escanear"
         component={QRScanScreen}
         options={{
           tabBarIcon: ({ focused, size }) => (
@@ -46,7 +47,7 @@ function TabNavigatorScreen() {
         }}
       />
       <Tab.Screen
-        name="Profile"
+        name="Perfil"
         component={ProfileScreen}
         options={{
           tabBarIcon: ({ focused, size }) => (
