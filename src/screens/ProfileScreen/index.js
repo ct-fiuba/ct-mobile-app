@@ -8,7 +8,7 @@ import {
 } from 'expo-status-bar';
 
 import ModalDatePicker from '../../components/ModalDatePicker';
-
+import { formatDate } from '../../utils/dateFormat';
 import { getUserInfo, saveUserInfo } from '../../services/LocalStorageService';
 
 import styles from './styles';
@@ -62,9 +62,7 @@ function ProfileScreen() {
 
   const onDateConfirmed = useCallback(date => {
     setVisibleDate(false);
-    setMedicalDischargeDate(
-      `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`
-    );
+    setMedicalDischargeDate(formatDate(date));
   }, []);
 
   const onDateCancel = useCallback(() => {
@@ -74,9 +72,7 @@ function ProfileScreen() {
 
   const onDoseDateConfirmed = useCallback(date => {
     setVisibleDoseDate(false);
-    setLastDoseDate(
-      `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`
-    );
+    setLastDoseDate(formatDate(date));
   }, []);
 
   const onDoseDateCancel = useCallback(() => {
@@ -120,7 +116,7 @@ function ProfileScreen() {
         <View style={styles.form}>
           <View style={styles.wrap}>
             <Text fontWeight="bold" fontSize={15}>
-              ¿Esta Vacunado?
+              ¿Está Vacunado?
             </Text>
             <Switch
               trackColor={{ false: '#767577', true: '#81b0ff' }}

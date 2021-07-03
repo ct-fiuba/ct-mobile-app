@@ -4,7 +4,7 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 import styles from './styles';
 
-export default function RiskStatus({ onPress, title, icon }) {
+export default function ActionableCard({ onPress, title, icon }) {
   return (
     <TouchableOpacity onPress={onPress} style={styles.common}>
       <MaterialCommunityIcons name={icon} size={30} />
