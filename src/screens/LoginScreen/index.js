@@ -53,9 +53,7 @@ function LoginScreen({ navigation }) {
     <SafeAreaView style={{ flex: 1 }}>
       <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
         <KeyboardAvoidingView style={styles.center}>
-          <Text style={{ fontSize: 32, fontWeight: '700', color: 'gray' }}>
-            Contact Tracing
-          </Text>
+          <Text style={styles.title}>Contact Tracing</Text>
           <View style={styles.form}>
             <TextInput
               style={styles.input}
@@ -91,15 +89,11 @@ function LoginScreen({ navigation }) {
           </Text>
           <View style={{ flexDirection: 'row' }}>
             <TouchableOpacity style={{ margin: 10 }} onPress={signInWithEmail}>
-              <Text
-                style={{ fontWeight: '200', fontSize: 17, textAlign: 'center' }}
-              >
-                Iniciar sesión
-              </Text>
+              <Text style={styles.button}>Iniciar sesión</Text>
             </TouchableOpacity>
             <View style={{ margin: 10 }}>
               <Text
-                style={{ fontWeight: '200', fontSize: 17, textAlign: 'center' }}
+                style={styles.button}
                 onPress={() => {
                   navigation.navigate('SignUpScreen');
                 }}

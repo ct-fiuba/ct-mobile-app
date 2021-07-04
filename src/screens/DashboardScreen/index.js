@@ -1,12 +1,16 @@
 import React, { useCallback } from 'react';
-import { Button, SafeAreaView, Alert } from 'react-native';
+import { View, Alert } from 'react-native';
+import { FlatGrid } from 'react-native-super-grid';
 
 import { useDispatch } from '../../contexts/AuthContext';
 import { actionCreators } from '../../contexts/AuthContext/reducer';
 
 import { removeSession, getCodes } from '../../services/LocalStorageService';
 import { sendCodes } from '../../services/CTUserAPIService';
-import layoutStyles from '../../styles/layout';
+import RiskStatus from '../../components/RiskStatus';
+import ActionableCard from '../../components/ActionableCard';
+
+import styles from './styles';
 
 function DashboardScreen() {
   const dispatch = useDispatch();
@@ -38,10 +42,22 @@ function DashboardScreen() {
     dispatch(actionCreators.resetSession());
   }, [dispatch]);
   return (
-    <SafeAreaView style={layoutStyles.center}>
-      <Button onPress={exposeCodes} title="Compartir códigos" />
-      <Button onPress={signOut} title="Sign Out" />
-    </SafeAreaView>
+    <View>
+      <RiskStatus risk="high" />
+      <View style={styles.center}>
+        <FlatGrid
+          itemDimension={110}
+          style={styles.actionables}
+          data={[
+            { onPress: exposeCodes, title: 'Compartir codigos', icon: 'share' },
+            { onPress: signOut, title: 'Salir', icon: 'logout' },
+          ]}
+          renderItem={({ item: { onPress, title, icon } }) => (
+            <ActionableCard onPress={onPress} title={title} icon={icon} />
+          )}
+        />
+      </View>
+    </View>
   );
 }
 

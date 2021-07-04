@@ -22,6 +22,7 @@ import styles from './styles';
 function SignUpScreen({ navigation }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [repeatPassword, setRepeatPassword] = useState('');
   const [dni, setDNI] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -29,15 +30,19 @@ function SignUpScreen({ navigation }) {
   const dispatch = useDispatch();
 
   const signUpWithEmail = async () => {
-    setLoading(true);
     setError('');
-    signUp(email, dni, password)
-      .then(response => {
-        saveSession(response.data);
-        dispatch(actionCreators.setSession(response.data));
-      })
-      .catch(error => setError(error.response.data.reason))
-      .finally(() => setLoading(false));
+    if (password === repeatPassword) {
+      setLoading(true);
+      signUp(email, dni, password)
+        .then(response => {
+          saveSession(response.data);
+          dispatch(actionCreators.setSession(response.data));
+        })
+        .catch(error => setError(error.response.data.reason))
+        .finally(() => setLoading(false));
+    } else {
+      setError('Las contraseñas no coinciden');
+    }
   };
 
   const renderLoading = () => {
@@ -54,14 +59,12 @@ function SignUpScreen({ navigation }) {
     <SafeAreaView style={{ flex: 1 }}>
       <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
         <KeyboardAvoidingView style={styles.center}>
-          <Text style={{ fontSize: 32, fontWeight: '700', color: 'gray' }}>
-            Contact Tracing
-          </Text>
+          <Text style={styles.title}>Contact Tracing</Text>
           <View style={styles.form}>
             <TextInput
               style={styles.input}
               placeholder="Email"
-              placeholderTextColor="#B1B1B1"
+              placeholderTextColor="#blue"
               returnKeyType="next"
               keyboardType="email-address"
               textContentType="emailAddress"
@@ -78,13 +81,23 @@ function SignUpScreen({ navigation }) {
             />
             <TextInput
               style={styles.input}
-              placeholder="Password"
+              placeholder="Contraseña"
               placeholderTextColor="#B1B1B1"
               returnKeyType="done"
               textContentType="newPassword"
               secureTextEntry
               value={password}
               onChangeText={setPassword}
+            />
+            <TextInput
+              style={styles.input}
+              placeholder="Confirmar Contraseña"
+              placeholderTextColor="#B1B1B1"
+              returnKeyType="done"
+              textContentType="newPassword"
+              secureTextEntry
+              value={repeatPassword}
+              onChangeText={setRepeatPassword}
             />
           </View>
           {renderLoading()}
@@ -100,15 +113,11 @@ function SignUpScreen({ navigation }) {
           </Text>
           <View style={{ flexDirection: 'row' }}>
             <TouchableOpacity style={{ margin: 10 }} onPress={signUpWithEmail}>
-              <Text
-                style={{ fontWeight: '200', fontSize: 17, textAlign: 'center' }}
-              >
-                Crear Cuenta
-              </Text>
+              <Text style={styles.button}>Crear Cuenta</Text>
             </TouchableOpacity>
             <View style={{ margin: 10 }}>
               <Text
-                style={{ fontWeight: '200', fontSize: 17, textAlign: 'center' }}
+                style={styles.button}
                 onPress={() => navigation.navigate('LoginScreen')}
               >
                 Ya tienes cuenta?

@@ -12,6 +12,13 @@ const formStyles = StyleSheet.create({
     paddingBottom: 1.5,
     marginTop: 25.5,
   },
+  button: {
+    fontWeight: '200',
+    fontSize: 17,
+    textAlign: 'center',
+    color: 'blue',
+  },
+  title: { fontSize: 32, fontWeight: '600', color: 'blue' },
 });
 
 export default formStyles;

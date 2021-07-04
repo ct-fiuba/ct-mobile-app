@@ -1,4 +1,5 @@
 import React, { useReducer } from 'react';
+import { ThemeProvider } from 'react-native-magnus';
 
 import {
   reducer as authReducer,
@@ -13,7 +14,9 @@ export default function App() {
   const [authState, authDispatch] = useReducer(authReducer, INITIAL_STATE);
   return (
     <Context.Provider value={{ state: authState, dispatch: authDispatch }}>
-      <Screens />
+      <ThemeProvider>
+        <Screens />
+      </ThemeProvider>
     </Context.Provider>
   );
 }

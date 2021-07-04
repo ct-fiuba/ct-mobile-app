@@ -1,6 +1,6 @@
 import { AsyncStorage } from 'react-native';
 
-const SCAN_WINDOW = 14; // Scan window in days to fetch codes from local storage
+const SCAN_WINDOW = 14;
 
 export const saveSession = session =>
   AsyncStorage.setItem('session', JSON.stringify(session));
@@ -13,6 +13,15 @@ export const getAccessToken = async () => {
   const session = await getSessionActive();
   const { accessToken } = JSON.parse(session);
   return accessToken;
+};
+
+export const saveUserInfo = info => {
+  AsyncStorage.setItem('ct-user', JSON.stringify(info));
+};
+
+export const getUserInfo = async () => {
+  const data = await AsyncStorage.getItem('ct-user');
+  return data ? JSON.parse(data) : {};
 };
 
 export const saveScan = scan => {

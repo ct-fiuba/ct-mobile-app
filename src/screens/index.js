@@ -4,6 +4,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 import DashboardScreen from './DashboardScreen';
+import ProfileScreen from './ProfileScreen';
 // import LoadingScreen from '../screens/LoadingScreen';
 import LoginScreen from './LoginScreen';
 import SignUpScreen from './SignUpScreen';
@@ -23,22 +24,34 @@ function TabNavigatorScreen() {
         activeTintColor: 'blue',
         inactiveTintColor: 'gray',
       }}
+      initialRouteName="Escanear"
     >
       <Tab.Screen
-        name="Home"
+        name="Inicio"
         component={DashboardScreen}
         options={{
           tabBarIcon: ({ focused, size }) => (
             <TabBarIcon name="md-home" focused={focused} size={size} />
           ),
+          unmountOnBlur: false,
         }}
       />
       <Tab.Screen
-        name="Scan"
+        name="Escanear"
         component={QRScanScreen}
         options={{
           tabBarIcon: ({ focused, size }) => (
             <TabBarIcon name="md-qr-scanner" focused={focused} size={size} />
+          ),
+          unmountOnBlur: true,
+        }}
+      />
+      <Tab.Screen
+        name="Perfil"
+        component={ProfileScreen}
+        options={{
+          tabBarIcon: ({ focused, size }) => (
+            <TabBarIcon name="md-person" focused={focused} size={size} />
           ),
           unmountOnBlur: true,
         }}
