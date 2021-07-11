@@ -1,15 +1,28 @@
 import 'react-native-get-random-values';
 import { v4 as uuidv4 } from 'uuid';
 import { withGenuxToken } from './CTAuthServerService';
-import { saveScan } from './LocalStorageService';
+import { saveScan, getUserInfo } from './LocalStorageService';
 import { saveVisit } from './CTUserAPIService';
 
-export const scan = async scanCode => {
+export const scan = async (scanCode, isExit) => {
   const timestamp = new Date();
+  const userInfo = await getUserInfo();
   const value = {
     scanCode,
     timestamp,
     userGeneratedCode: uuidv4(),
+    isExitScan: isExit,
+    ...(userInfo && {
+      vaccinated: userInfo.vaccinated,
+      ...(userInfo.vaccinated && {
+        vaccineReceived: userInfo.vaccine.name, // TODO: Maybe is better to send the id
+        vaccinatedDate: userInfo.lastDoseDate,
+      }),
+      covidRecovered: userInfo.beenInfected,
+      ...(userInfo.vaccinated && {
+        covidRecoveredDate: userInfo.medicalDischargeDate,
+      }),
+    }),
   };
   return withGenuxToken(saveVisit(value))
     .then(res => {
