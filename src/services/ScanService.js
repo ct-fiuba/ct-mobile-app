@@ -19,7 +19,7 @@ export const scan = async (scanCode, isExit) => {
         vaccinatedDate: userInfo.lastDoseDate,
       }),
       covidRecovered: userInfo.beenInfected,
-      ...(userInfo.vaccinated && {
+      ...(userInfo.beenInfected && {
         covidRecoveredDate: userInfo.medicalDischargeDate,
       }),
     }),
