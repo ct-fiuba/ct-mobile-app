@@ -13,7 +13,7 @@ export const scan = async (scanCode, isExit) => {
     userGeneratedCode: uuidv4(),
     isExitScan: isExit,
     ...(userInfo && {
-      vaccinated: userInfo.vaccinated,
+      vaccinated: userInfo.vaccinated ? userInfo.dose : 0,
       ...(userInfo.vaccinated && {
         vaccineReceived: userInfo.vaccine.name, // TODO: Maybe is better to send the id
         vaccinatedDate: userInfo.lastDoseDate,
