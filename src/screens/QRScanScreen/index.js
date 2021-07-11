@@ -46,7 +46,7 @@ function QRScanScreen({ navigation }) {
       scan(data).catch(error => openAlert('Error', error.response.data.reason));
       openAlert(
         'Éxito',
-        `La visita en ${parsedData.name} se escaneó exitosamente`
+        `La visita en ${parsedData.space} de ${parsedData.name} se escaneó exitosamente`
       );
     } catch {
       openAlert('Error', 'Ocurrió un error al escanear, vuelva a internarlo');
