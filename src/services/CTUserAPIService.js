@@ -45,3 +45,5 @@ export const sendCodes = codes =>
       )
     )
   );
+
+export const getBillboard = () => userApi.get('/billboard');
