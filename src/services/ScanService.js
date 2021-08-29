@@ -1,17 +1,25 @@
 import 'react-native-get-random-values';
 import { v4 as uuidv4 } from 'uuid';
 import { withGenuxToken } from './CTAuthServerService';
-import { saveScan, getUserInfo } from './LocalStorageService';
-import { saveVisit } from './CTUserAPIService';
+import { saveScan, getUserInfo, getLastVisit, closePreviousVisit } from './LocalStorageService';
+import { saveVisit, addExitTimestamp } from './CTUserAPIService';
 
-export const scan = async (scanCode, isExit) => {
-  const timestamp = new Date();
+const EXIT_SCAN_VISIT_DURATION_WINDOW_MULTIPLIER = 3;
+
+export const scan = async (scanCode, isExit, estimatedVisitDuration) => {
+  if (!isExit) {
+    return scanEntrance(scanCode, estimatedVisitDuration);
+  }
+  return scanExit(scanCode, estimatedVisitDuration);
+};
+
+const scanEntrance = async (scanCode, estimatedVisitDuration) => {
+  const entranceTimestamp = new Date();
   const userInfo = await getUserInfo();
   const value = {
     scanCode,
-    timestamp,
+    entranceTimestamp,
     userGeneratedCode: uuidv4(),
-    isExitScan: isExit,
     ...(userInfo && {
       vaccinated: userInfo.vaccinated ? userInfo.dose : 0,
       ...(userInfo.vaccinated && {
@@ -26,8 +34,55 @@ export const scan = async (scanCode, isExit) => {
   };
   return withGenuxToken(saveVisit(value))
     .then(res => {
+      console.log(res);
       saveScan(value);
       return res;
     })
     .catch(error => error.response);
 };
+
+const scanExit = async (scanCode, estimatedVisitDuration) => {
+  const exitTimestamp = new Date();
+  const userInfo = await getUserInfo();
+  const lastVisit = await getLastVisit();
+  const closingPreviousVisit = isExitScanClosingPreviousVisit(lastVisit, scanCode, estimatedVisitDuration);
+  const value = {
+    scanCode,
+    exitTimestamp,
+    userGeneratedCode: closingPreviousVisit ? lastVisit.userGeneratedCode : uuidv4(),
+    ...(userInfo && {
+      vaccinated: userInfo.vaccinated ? userInfo.dose : 0,
+      ...(userInfo.vaccinated && {
+        vaccineReceived: userInfo.vaccine.name, // TODO: Maybe is better to send the id
+        vaccinatedDate: userInfo.lastDoseDate,
+      }),
+      covidRecovered: userInfo.beenInfected,
+      ...(userInfo.beenInfected && {
+        covidRecoveredDate: userInfo.medicalDischargeDate,
+      }),
+    }),
+  };
+  return withGenuxToken(addExitTimestamp(value))
+    .then(res => {
+      if (closingPreviousVisit) {
+        closePreviousVisit();
+      } else {
+        saveScan(value);
+      }
+      return res;
+    })
+    .catch(error => error.response);
+};
+
+const isExitScanClosingPreviousVisit = (lastVisit, scanCode, estimatedVisitDuration) => {
+  if (!lastVisit || lastVisit.scanCode !== scanCode) {
+    return false;
+  }
+  const minutesDifference = msToMinutes(new Date() - new Date(lastVisit.entranceTimestamp));
+  const maximumDifference = parseInt(estimatedVisitDuration) * EXIT_SCAN_VISIT_DURATION_WINDOW_MULTIPLIER;
+  return minutesDifference <= maximumDifference;
+}
+
+const msToMinutes = (ms) => {
+  return Math.floor(ms / 1000 / 60);
+}

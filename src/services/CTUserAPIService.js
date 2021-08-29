@@ -31,6 +31,11 @@ export const saveVisit = visitInfo => async genuxToken =>
     headers: { 'genux-token': genuxToken },
   });
 
+export const addExitTimestamp = visitInfo => async genuxToken =>
+  userApi.post('/visits/addExitTimestamp', visitInfo, {
+    headers: { 'genux-token': genuxToken },
+  });
+
 export const sendCodes = codes =>
   Promise.all(
     codes.map(code =>

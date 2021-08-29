@@ -43,7 +43,7 @@ function QRScanScreen({ navigation }) {
     try {
       setScanned(true);
       const parsedData = JSON.parse(data);
-      scan(parsedData.id, parsedData.isExit).catch(error =>
+      scan(parsedData.id, parsedData.isExit, parsedData.estimatedVisitDuration).catch(error =>
         openAlert('Error', error.response.data.reason)
       );
       openAlert(
