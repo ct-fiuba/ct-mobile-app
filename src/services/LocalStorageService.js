@@ -57,6 +57,6 @@ export const getLastVisit = async () => {
   return JSON.parse(lastVisit);
 };
 
-export const closePreviousVisit = async () => {
+export const clearLastVisitInfo = async () => {
   AsyncStorage.setItem('ct-last-visit', '');
 };

@@ -1,7 +1,7 @@
 import 'react-native-get-random-values';
 import { v4 as uuidv4 } from 'uuid';
 import { withGenuxToken } from './CTAuthServerService';
-import { saveScan, getUserInfo, getLastVisit, closePreviousVisit } from './LocalStorageService';
+import { saveScan, getUserInfo, getLastVisit, clearLastVisitInfo } from './LocalStorageService';
 import { saveVisit, addExitTimestamp } from './CTUserAPIService';
 
 const EXIT_SCAN_VISIT_DURATION_WINDOW_MULTIPLIER = 3;
@@ -65,7 +65,7 @@ const scanExit = async (scanCode, estimatedVisitDuration) => {
   return withGenuxToken(addExitTimestamp(value))
     .then(res => {
       if (closingPreviousVisit) {
-        closePreviousVisit();
+        clearLastVisitInfo();
       } else {
         saveScan(value);
       }
