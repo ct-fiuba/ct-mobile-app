@@ -1,7 +1,6 @@
 import { AsyncStorage } from 'react-native';
 
 const SCAN_WINDOW = 14;
-const CLOSE_SCAN_WINDOW_SEARCH = 2;
 
 export const saveSession = session =>
   AsyncStorage.setItem('session', JSON.stringify(session));
