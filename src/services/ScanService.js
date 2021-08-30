@@ -59,7 +59,7 @@ const scanExit = async (scanCode, estimatedVisitDuration) => {
   const exitTimestamp = new Date();
   const userInfo = await getUserInfo();
   const lastVisit = await getLastVisit();
-  const closingLastVisit = isExitScanClosingLastVisit(lastVisit, scanCode, estimatedVisitDuration);
+  const closingLastVisit = isExitScanClosingLastVisit(lastVisit, scanCode);
 
   // if the we have a last visit but the current exit QR is not closing it, we need to evaluate if we need to close the previous visit
   if (lastVisit && !closingLastVisit) {
@@ -116,17 +116,17 @@ const addExitTimestampToLastVisit = async (lastVisit) => {
 }
 
 // Check if the last visit is under the time window where it is still closable, and if it has the same scanCode as the exit QR code recently scanned
-const isExitScanClosingLastVisit = (lastVisit, scanCode, estimatedVisitDuration) => {
+export const isExitScanClosingLastVisit = (lastVisit, scanCode) => {
   if (!lastVisit || lastVisit.scanCode !== scanCode) {
     return false;
   }
   const minutesDifference = msToMinutes(new Date() - new Date(lastVisit.entranceTimestamp));
-  const maximumDifference = parseInt(estimatedVisitDuration) * EXIT_SCAN_VISIT_DURATION_WINDOW_MULTIPLIER;
+  const maximumDifference = parseInt(lastVisit.estimatedVisitDuration) * EXIT_SCAN_VISIT_DURATION_WINDOW_MULTIPLIER;
   return minutesDifference <= maximumDifference;
 }
 
 // Check if the last visit is under the time window where it is still closable
-const isLastVisitStillClosable = (lastVisit) => {
+export const isLastVisitStillClosable = (lastVisit) => {
   const minutesDifference = msToMinutes(new Date() - new Date(lastVisit.entranceTimestamp));
   const maximumDifference = parseInt(lastVisit.estimatedVisitDuration) * NEW_SCAN_CLOSING_LAST_VISIT_WINDOW_MULTIPLIER;
   return minutesDifference <= maximumDifference;
