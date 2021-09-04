@@ -15,7 +15,7 @@ export default function RiskStatus({ risk }) {
   }
 
   return (
-    <View style={[styles.common, styles[risk]]}>
+    <View style={[styles.common, styles[RISK_INFO[risk].id]]}>
       <Text
         style={styles.title}
       >{`Nivel de riesgo: ${RISK_INFO[risk].title}`}</Text>

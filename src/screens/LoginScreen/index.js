@@ -32,10 +32,13 @@ function LoginScreen({ navigation }) {
     setError('');
     signIn(email, password)
       .then(response => {
+        console.log(response.data)
         saveSession(response.data);
         dispatch(actionCreators.setSession(response.data));
       })
-      .catch(error => setError(error.response.data.reason))
+      .catch(error => {
+        console.log(error.response)
+        setError(error.response.data.reason)})
       .finally(() => setLoading(false));
   };
 

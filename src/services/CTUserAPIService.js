@@ -46,4 +46,4 @@ export const sendCodes = codes =>
     )
   );
 
-export const getBillboard = () => userApi.get('/billboard');
+export const getBillboard = () => userApi.get('/billboard').then(res => res.data);

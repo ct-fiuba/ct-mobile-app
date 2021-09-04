@@ -49,3 +49,7 @@ export const getCodes = async () => {
 
   return codes;
 };
+
+export const saveRisk = (risk) => AsyncStorage.setItem('ct-risk', risk);
+
+export const getRisk = () => AsyncStorage.getItem('ct-risk');
