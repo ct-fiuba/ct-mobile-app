@@ -10,10 +10,10 @@ describe('Testing the two isolated functions that determine if the last visit sh
 			const estimatedVisitDuration = 60
 			const lastVisit = {
 				entranceTimestamp,
-				"vaccinated": 0,
-				"covidRecovered": false,
-				"scanCode": "612bd2bdf9cd7d0019fb8a41",
-				"userGeneratedCode": "1982ec17-91a7-43e3-8152-7e70e899d5a2",
+				vaccinated: 0,
+				covidRecovered: false,
+				scanCode: "612bd2bdf9cd7d0019fb8a41",
+				userGeneratedCode: "1982ec17-91a7-43e3-8152-7e70e899d5a2",
 				estimatedVisitDuration
 			}
 
@@ -27,10 +27,10 @@ describe('Testing the two isolated functions that determine if the last visit sh
 			const estimatedVisitDuration = 30
 			const lastVisit = {
 				entranceTimestamp,
-				"vaccinated": 0,
-				"covidRecovered": false,
-				"scanCode": "612bd2bdf9cd7d0019fb8a41",
-				"userGeneratedCode": "1982ec17-91a7-43e3-8152-7e70e899d5a2",
+				vaccinated: 0,
+				covidRecovered: false,
+				scanCode: "612bd2bdf9cd7d0019fb8a41",
+				userGeneratedCode: "1982ec17-91a7-43e3-8152-7e70e899d5a2",
 				estimatedVisitDuration
 			}
 
@@ -44,10 +44,10 @@ describe('Testing the two isolated functions that determine if the last visit sh
 			const estimatedVisitDuration = 30
 			const lastVisit = {
 				entranceTimestamp,
-				"vaccinated": 0,
-				"covidRecovered": false,
-				"scanCode": "612bd2bdf9cd7d0019fb8a41",
-				"userGeneratedCode": "1982ec17-91a7-43e3-8152-7e70e899d5a2",
+				vaccinated: 0,
+				covidRecovered: false,
+				scanCode: "612bd2bdf9cd7d0019fb8a41",
+				userGeneratedCode: "1982ec17-91a7-43e3-8152-7e70e899d5a2",
 				estimatedVisitDuration
 			}
 
@@ -64,10 +64,10 @@ describe('Testing the two isolated functions that determine if the last visit sh
 			const scanCode = "612bd2bdf9cd7d0019fb8a41";
 			const lastVisit = {
 				entranceTimestamp,
-				"vaccinated": 0,
-				"covidRecovered": false,
+				vaccinated: 0,
+				covidRecovered: false,
 				scanCode,
-				"userGeneratedCode": "1982ec17-91a7-43e3-8152-7e70e899d5a2",
+				userGeneratedCode: "1982ec17-91a7-43e3-8152-7e70e899d5a2",
 				estimatedVisitDuration
 			}
 
@@ -83,10 +83,10 @@ describe('Testing the two isolated functions that determine if the last visit sh
 			const scanCodeCurrentScan = "612bd2bdf9cd7d0019fb8a42";
 			const lastVisit = {
 				entranceTimestamp,
-				"vaccinated": 0,
-				"covidRecovered": false,
-				"scanCode": scanCodeLastVisit,
-				"userGeneratedCode": "1982ec17-91a7-43e3-8152-7e70e899d5a2",
+				vaccinated: 0,
+				covidRecovered: false,
+				scanCode: scanCodeLastVisit,
+				userGeneratedCode: "1982ec17-91a7-43e3-8152-7e70e899d5a2",
 				estimatedVisitDuration
 			}
 
@@ -101,10 +101,10 @@ describe('Testing the two isolated functions that determine if the last visit sh
 			const scanCode = "612bd2bdf9cd7d0019fb8a41";
 			const lastVisit = {
 				entranceTimestamp,
-				"vaccinated": 0,
-				"covidRecovered": false,
+				vaccinated: 0,
+				covidRecovered: false,
 				scanCode,
-				"userGeneratedCode": "1982ec17-91a7-43e3-8152-7e70e899d5a2",
+				userGeneratedCode: "1982ec17-91a7-43e3-8152-7e70e899d5a2",
 				estimatedVisitDuration
 			}
 
@@ -119,10 +119,10 @@ describe('Testing the two isolated functions that determine if the last visit sh
 			const scanCode = "612bd2bdf9cd7d0019fb8a41";
 			const lastVisit = {
 				entranceTimestamp,
-				"vaccinated": 0,
-				"covidRecovered": false,
+				vaccinated: 0,
+				covidRecovered: false,
 				scanCode,
-				"userGeneratedCode": "1982ec17-91a7-43e3-8152-7e70e899d5a2",
+				userGeneratedCode: "1982ec17-91a7-43e3-8152-7e70e899d5a2",
 				estimatedVisitDuration
 			}
 
