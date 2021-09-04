@@ -16,3 +16,6 @@ yarn-error.log
 config.js
 keys.js
 .env
+package-lock.json
+ngrok
+.DS_Store
