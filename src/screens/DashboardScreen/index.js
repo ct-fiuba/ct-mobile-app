@@ -5,13 +5,13 @@ import { FlatGrid } from 'react-native-super-grid';
 import { useDispatch } from '../../contexts/AuthContext';
 import { actionCreators } from '../../contexts/AuthContext/reducer';
 
-import { removeSession, getCodes, getRisk , saveRisk} from '../../services/LocalStorageService';
-
-import { sendCodes, getBillboard } from '../../services/CTUserAPIService';
+import { removeSession, getCodes, getRisk } from '../../services/LocalStorageService';
+import { updateRisk } from '../../services/BillboardService';
+import { sendCodes } from '../../services/CTUserAPIService';
 import RiskStatus from '../../components/RiskStatus';
 import ActionableCard from '../../components/ActionableCard';
 
-import useInterval from './useInterval';
+import useInterval from '../../utils/useInterval';
 
 import styles from './styles';
 
@@ -20,34 +20,22 @@ function DashboardScreen() {
 
   const [risk, setRisk] = useState(0);
 
+  useEffect(() => {
+    async function fetchRisk() {
+      const savedRisk = parseInt(await getRisk(), 10) || 0;
+      setRisk(savedRisk)
+    }
+    fetchRisk();
+  }, []);
+
   useInterval(async () => {
-    try {
-      const billboard = await getBillboard();
-
-      const codes = await getCodes();
-  
-      let newRisk = await getRisk();
-  
-      codes.forEach(code => {
-        let compromisedCode = billboard.find(x => x.userGeneratedCode === code.userGeneratedCode);
-  
-        if (compromisedCode && compromisedCode.risk > newRisk) {
-          newRisk = compromisedCode.risk
-        }
-      });
-
-      if (newRisk > risk) {
+    await updateRisk(risk,
+      (newRisk) => {
         setRisk(newRisk)
-        saveRisk(newRisk)
-        openAlert('Alerta', 'El riesgo de contagio ha aumentado');
-      }
-    }
-    catch (error) {
-      openAlert('Error', error.response.data.reason)
-      console.log(error.response.data)
-    }
-
-    
+        openAlert('Alerta', 'El riesgo de contagio ha cambiado.');
+      },
+      (error) => openAlert('Error', error.reason)
+    );
   }, 60000);
 
   const openAlert = (title, message) => {
@@ -78,7 +66,7 @@ function DashboardScreen() {
   }, [dispatch]);
   return (
     <View>
-      <RiskStatus risk={risk}/>
+      <RiskStatus risk={risk} />
       <View style={styles.center}>
         <FlatGrid
           itemDimension={110}
