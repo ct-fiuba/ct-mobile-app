@@ -7,7 +7,7 @@ export const updateRisk = async (oldRisk, onNewRisk, onError) => {
 
     const codes = await getCodes();
 
-    let newRisk = oldRisk;
+    let newRisk = 0;
 
     codes.forEach(code => {
       let compromisedCode = billboard.find(x => x.userGeneratedCode === code.userGeneratedCode);
@@ -16,7 +16,6 @@ export const updateRisk = async (oldRisk, onNewRisk, onError) => {
         newRisk = compromisedCode.risk
       }
     });
-
 
     if (newRisk !== oldRisk) {
       await saveRisk(newRisk.toString())
