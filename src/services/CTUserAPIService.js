@@ -1,7 +1,7 @@
 import { CT_USER_API_URI } from 'react-native-dotenv';
 
 import axios from 'axios';
-import { getSessionActive, saveSession } from './LocalStorageService';
+import { getSessionActive, saveSession, SCAN_WINDOW } from './LocalStorageService';
 import { refreshAccessToken, withGenuxToken } from './CTAuthServerService';
 
 const userApi = axios.create({
@@ -46,4 +46,9 @@ export const sendCodes = codes =>
     )
   );
 
-export const getBillboard = () => userApi.get('/billboard').then(res => res.data);
+export const getBillboard = async () => {
+  let date = new Date()
+  date.setDate(date.getDate() - SCAN_WINDOW);
+  const keyDate = date.toISOString().slice(0, 10);
+  return userApi.get(`/billboard?from=${keyDate}`).then(res => res.data);
+}
