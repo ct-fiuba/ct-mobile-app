@@ -1,11 +1,16 @@
 import React, { useCallback, useState, useEffect } from 'react';
 import { View, Alert } from 'react-native';
 import { FlatGrid } from 'react-native-super-grid';
+import { CT_BILLBOARD_INTERVAL } from 'react-native-dotenv';
 
 import { useDispatch } from '../../contexts/AuthContext';
 import { actionCreators } from '../../contexts/AuthContext/reducer';
 
-import { removeSession, getCodes, getRisk } from '../../services/LocalStorageService';
+import {
+  removeSession,
+  getCodes,
+  getRisk,
+} from '../../services/LocalStorageService';
 import { updateRisk } from '../../services/BillboardService';
 import { sendCodes } from '../../services/CTUserAPIService';
 import RiskStatus from '../../components/RiskStatus';
@@ -23,20 +28,10 @@ function DashboardScreen() {
   useEffect(() => {
     async function fetchRisk() {
       const savedRisk = parseInt(await getRisk(), 10) || 0;
-      setRisk(savedRisk)
+      setRisk(savedRisk);
     }
     fetchRisk();
   }, []);
-
-  useInterval(async () => {
-    await updateRisk(risk,
-      (newRisk) => {
-        setRisk(newRisk)
-        openAlert('Alerta', 'El riesgo de contagio ha cambiado.');
-      },
-      (error) => openAlert('Error', error.reason)
-    );
-  }, 60000);
 
   const openAlert = (title, message) => {
     Alert.alert(
@@ -50,6 +45,17 @@ function DashboardScreen() {
       { cancelable: false }
     );
   };
+
+  useInterval(async () => {
+    await updateRisk(
+      risk,
+      newRisk => {
+        setRisk(newRisk);
+        openAlert('Alerta', 'El riesgo de contagio ha cambiado.');
+      },
+      error => openAlert('Error', error.reason)
+    );
+  }, CT_BILLBOARD_INTERVAL);
 
   const exposeCodes = useCallback(async () => {
     const codes = await getCodes();

@@ -1,5 +1,5 @@
-import { getBillboard } from './CTUserAPIService'
-import { getCodes, saveRisk } from './LocalStorageService'
+import { getBillboard } from './CTUserAPIService';
+import { getCodes, saveRisk } from './LocalStorageService';
 
 export const updateRisk = async (oldRisk, onNewRisk, onError) => {
   try {
@@ -10,20 +10,21 @@ export const updateRisk = async (oldRisk, onNewRisk, onError) => {
     let newRisk = 0;
 
     codes.forEach(code => {
-      let compromisedCode = billboard.find(x => x.userGeneratedCode === code.userGeneratedCode);
+      const compromisedCode = billboard.find(
+        x => x.userGeneratedCode === code.userGeneratedCode
+      );
 
       if (compromisedCode && compromisedCode.risk > newRisk) {
-        newRisk = compromisedCode.risk
+        newRisk = compromisedCode.risk;
       }
     });
 
     if (newRisk !== oldRisk) {
-      await saveRisk(newRisk.toString())
-      onNewRisk(newRisk)
+      await saveRisk(newRisk.toString());
+      onNewRisk(newRisk);
     }
+  } catch (error) {
+    console.error(error.response);
+    onError(error.response.data);
   }
-  catch (error) {
-    console.log(error.response)
-    onError(error.response.data)
-  }
-}
+};
