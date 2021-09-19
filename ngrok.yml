@@ -1,0 +1,8 @@
+authtoken: 1j74GCVOAMfr6a0Ch6kTtcsMtEO_3od9ZuHKp81grhgJNL22D
+tunnels:
+  first:
+    addr: 127.0.0.1:5000
+    proto: http
+  second:
+    addr: 127.0.0.1:5006
+    proto: http

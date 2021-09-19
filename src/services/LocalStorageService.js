@@ -25,12 +25,13 @@ export const getUserInfo = async () => {
 };
 
 export const saveScan = scan => {
-  const keyDate = scan.timestamp.toISOString().slice(0, 10);
+  const keyDate = scan.entranceTimestamp.toISOString().slice(0, 10);
   AsyncStorage.getItem(keyDate).then(scans => {
     const scansParsed = scans ? JSON.parse(scans) : [];
     scansParsed.push(scan);
     AsyncStorage.setItem(keyDate, JSON.stringify(scansParsed));
   });
+  AsyncStorage.setItem('ct-last-visit', JSON.stringify(scan));
 };
 
 export const getCodes = async () => {
@@ -53,3 +54,12 @@ export const getCodes = async () => {
 export const saveRisk = risk => AsyncStorage.setItem('ct-risk', risk);
 
 export const getRisk = () => AsyncStorage.getItem('ct-risk');
+
+export const getLastVisit = async () => {
+  const lastVisit = await AsyncStorage.getItem('ct-last-visit');
+  return JSON.parse(lastVisit);
+};
+
+export const clearLastVisitInfo = async () => {
+  AsyncStorage.setItem('ct-last-visit', '');
+};
