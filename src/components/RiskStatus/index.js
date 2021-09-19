@@ -5,7 +5,7 @@ import {
   setStatusBarStyle,
 } from 'expo-status-bar';
 
-import { RISK_INFO } from './constants';
+import { RISK_INFO } from '../../constants/risk';
 import styles from './styles';
 
 export default function RiskStatus({ risk }) {

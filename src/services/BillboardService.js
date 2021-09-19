@@ -1,5 +1,6 @@
 import { getBillboard } from './CTUserAPIService';
 import { getCodes, saveRisk } from './LocalStorageService';
+import { RISK_INFO } from '../constants/risk';
 
 export const updateRisk = async (oldRisk, onNewRisk, onError) => {
   try {
@@ -9,15 +10,18 @@ export const updateRisk = async (oldRisk, onNewRisk, onError) => {
 
     let newRisk = 0;
 
-    codes.forEach(code => {
+    for (const code of codes) {
       const compromisedCode = billboard.find(
         x => x.userGeneratedCode === code.userGeneratedCode
       );
 
       if (compromisedCode && compromisedCode.risk > newRisk) {
         newRisk = compromisedCode.risk;
+        if (newRisk >= RISK_INFO.length - 1) {
+          break;
+        }
       }
-    });
+    }
 
     if (newRisk !== oldRisk) {
       await saveRisk(newRisk.toString());
