@@ -1,19 +1,37 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useState, useEffect } from 'react';
 import { View, Alert } from 'react-native';
 import { FlatGrid } from 'react-native-super-grid';
+import { CT_BILLBOARD_INTERVAL } from 'react-native-dotenv';
 
 import { useDispatch } from '../../contexts/AuthContext';
 import { actionCreators } from '../../contexts/AuthContext/reducer';
 
-import { removeSession, getCodes } from '../../services/LocalStorageService';
+import {
+  removeSession,
+  getCodes,
+  getRisk,
+} from '../../services/LocalStorageService';
+import { updateRisk } from '../../services/BillboardService';
 import { sendCodes } from '../../services/CTUserAPIService';
 import RiskStatus from '../../components/RiskStatus';
 import ActionableCard from '../../components/ActionableCard';
+
+import useInterval from '../../utils/useInterval';
 
 import styles from './styles';
 
 function DashboardScreen() {
   const dispatch = useDispatch();
+
+  const [risk, setRisk] = useState(0);
+
+  useEffect(() => {
+    async function fetchRisk() {
+      const savedRisk = parseInt(await getRisk(), 10) || 0;
+      setRisk(savedRisk);
+    }
+    fetchRisk();
+  }, []);
 
   const openAlert = (title, message) => {
     Alert.alert(
@@ -27,6 +45,17 @@ function DashboardScreen() {
       { cancelable: false }
     );
   };
+
+  useInterval(async () => {
+    await updateRisk(
+      risk,
+      newRisk => {
+        setRisk(newRisk);
+        openAlert('Alerta', 'El riesgo de contagio ha cambiado.');
+      },
+      error => openAlert('Error', error.reason)
+    );
+  }, CT_BILLBOARD_INTERVAL);
 
   const exposeCodes = useCallback(async () => {
     const codes = await getCodes();
@@ -43,7 +72,7 @@ function DashboardScreen() {
   }, [dispatch]);
   return (
     <View>
-      <RiskStatus risk="high" />
+      <RiskStatus risk={risk} />
       <View style={styles.center}>
         <FlatGrid
           itemDimension={110}

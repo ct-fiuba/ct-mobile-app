@@ -1,6 +1,6 @@
 import { AsyncStorage } from 'react-native';
 
-const SCAN_WINDOW = 14;
+export const SCAN_WINDOW = 14;
 
 export const saveSession = session =>
   AsyncStorage.setItem('session', JSON.stringify(session));
@@ -51,8 +51,12 @@ export const getCodes = async () => {
   return codes;
 };
 
+export const saveRisk = risk => AsyncStorage.setItem('ct-risk', risk);
+
+export const getRisk = () => AsyncStorage.getItem('ct-risk');
+
 export const getLastVisit = async () => {
-  let lastVisit = await AsyncStorage.getItem('ct-last-visit');
+  const lastVisit = await AsyncStorage.getItem('ct-last-visit');
   return JSON.parse(lastVisit);
 };
 
