@@ -46,6 +46,23 @@ function DashboardScreen() {
     );
   };
 
+  const askQuestion = (title, message, onAccept) => {
+    Alert.alert(
+      title,
+      message,
+      [
+        {
+          text: 'Aceptar',
+          onPress: onAccept,
+        },
+        {
+          text: 'Cancelar',
+        },
+      ],
+      { cancelable: false }
+    );
+  };
+
   useInterval(async () => {
     await updateRisk(
       risk,
@@ -55,7 +72,7 @@ function DashboardScreen() {
       },
       error => openAlert('Error', error.reason)
     );
-  }, CT_BILLBOARD_INTERVAL);
+  }, parseInt(CT_BILLBOARD_INTERVAL));
 
   const exposeCodes = useCallback(async () => {
     const codes = await getCodes();
@@ -78,8 +95,17 @@ function DashboardScreen() {
           itemDimension={110}
           style={styles.actionables}
           data={[
-            { onPress: exposeCodes, title: 'Compartir codigos', icon: 'share' },
-            { onPress: signOut, title: 'Salir', icon: 'logout' },
+            {
+              onPress: () =>
+                askQuestion(
+                  'Compartir códigos',
+                  '¿Está seguro que desea compartir sus códigos?',
+                  exposeCodes
+                ),
+              title: 'Compartir códigos',
+              icon: 'share',
+            },
+            { onPress: signOut, title: 'Cerrar Sesión', icon: 'logout' },
           ]}
           renderItem={({ item: { onPress, title, icon } }) => (
             <ActionableCard onPress={onPress} title={title} icon={icon} />

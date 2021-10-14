@@ -1,5 +1,7 @@
 import { StyleSheet } from 'react-native';
 
+import { COLORS } from './colors';
+
 const formStyles = StyleSheet.create({
   form: {
     width: '86%',
@@ -13,12 +15,13 @@ const formStyles = StyleSheet.create({
     marginTop: 25.5,
   },
   button: {
-    fontWeight: '200',
-    fontSize: 17,
+    // fontWeight: '200',
+    fontSize: 18,
+    // fontWeight: '500',
     textAlign: 'center',
-    color: 'blue',
+    color: COLORS.main,
   },
-  title: { fontSize: 32, fontWeight: '600', color: 'blue' },
+  title: { fontSize: 32, fontWeight: '600', color: COLORS.main },
 });
 
 export default formStyles;

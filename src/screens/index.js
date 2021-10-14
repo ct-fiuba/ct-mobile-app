@@ -14,6 +14,8 @@ import { getSessionActive } from '../services/LocalStorageService';
 import { useSelector, useDispatch } from '../contexts/AuthContext';
 import { actionCreators } from '../contexts/AuthContext/reducer';
 
+import { COLORS } from '../styles/colors';
+
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
@@ -21,7 +23,7 @@ function TabNavigatorScreen() {
   return (
     <Tab.Navigator
       tabBarOptions={{
-        activeTintColor: 'blue',
+        activeTintColor: COLORS.main,
         inactiveTintColor: 'gray',
       }}
       initialRouteName="Escanear"
@@ -64,6 +66,7 @@ export default function Screens() {
   const [isLoggedIn, setLoggedIn] = useState(false);
 
   const session = useSelector(state => state.session);
+
   const dispatch = useDispatch();
 
   const isUserLoggedIn = useCallback(async () => {
@@ -71,7 +74,7 @@ export default function Screens() {
     if (savedSession) {
       dispatch(actionCreators.setSession(JSON.parse(savedSession)));
     }
-    return session !== null || savedSession
+    return (session !== null && session.refreshToken) || savedSession
       ? setLoggedIn(true)
       : setLoggedIn(false);
   }, [dispatch, session]);

@@ -6,6 +6,7 @@ import {
   getAccessToken,
   getSessionActive,
   saveSession,
+  removeSession,
 } from './LocalStorageService';
 
 const authApi = axios.create({
@@ -42,7 +43,11 @@ authApi.interceptors.response.use(null, async error => {
         error.config.data.accessToken = refreshResponse.data.accessToken;
         return authApi.request(error.config);
       })
-      .catch(refreshError => Promise.reject(refreshError));
+      .catch(async error => {
+        console.error('REFRESH ERRORED', error);
+        await removeSession();
+        return Promise.reject(new Error('Sesión expirada'));
+      });
   }
 
   return Promise.reject(error);
