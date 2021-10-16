@@ -131,7 +131,7 @@ function UserInfo() {
                     }}
                     disabled={!editable}
                   >
-                    {vaccine ? vaccine.name : 'No especifica'}
+                    {vaccine ? vaccine.name : '-'}
                   </Button>
                 </View>
 
@@ -165,7 +165,7 @@ function UserInfo() {
                     }}
                     disabled={!editable}
                   >
-                    {dose ? dose.toString() : 'No especifica'}
+                    {dose ? dose.toString() : '-'}
                   </Button>
                 </View>
 
@@ -197,7 +197,7 @@ function UserInfo() {
                   }}
                   disabled={!editable}
                 >
-                  {lastDoseDate || 'No especifica'}
+                  {lastDoseDate || '-'}
                 </Button>
               </View>
 
@@ -239,7 +239,7 @@ function UserInfo() {
                 }}
                 disabled={!editable}
               >
-                {medicalDischargeDate || 'No especifica'}
+                {medicalDischargeDate || '-'}
               </Button>
             </View>
 

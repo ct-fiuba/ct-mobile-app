@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text } from 'react-native';
+import 'intl';
+import 'intl/locale-data/jsonp/de';
 
 import { getSessionActive } from '../../services/LocalStorageService';
 
@@ -23,7 +25,10 @@ export default function RiskStatus({ risk }) {
         style={styles.title}
       >{`Nivel de riesgo: ${RISK_INFO[risk].title}`}</Text>
       <Text style={styles.small}>{sessionInfo.email}</Text>
-      <Text style={styles.small}>{sessionInfo.dni}</Text>
+      <Text style={styles.small}>
+        {sessionInfo.dni &&
+          new Intl.NumberFormat('de-DE').format(sessionInfo.dni)}
+      </Text>
     </View>
   );
 }

@@ -94,38 +94,42 @@ function DashboardScreen({ navigation }) {
   return (
     <View>
       <RiskStatus risk={risk} />
-      <View>
-        <View>
-          <UserInfo />
-          <View style={[styles.center, styles.actionables]}>
-            {[
-              {
-                onPress: () =>
-                  askQuestion(
-                    'Compartir códigos',
-                    '¿Está seguro que desea compartir sus códigos?',
-                    exposeCodes
-                  ),
-                title: 'Me contagie',
-                icon: 'share',
-              },
-              {
-                onPress: goToScan,
-                title: 'Escanear',
-                icon: 'camera',
-                main: true,
-              },
-              { onPress: signOut, title: 'Cerrar Sesión', icon: 'logout' },
-            ].map(({ onPress, title, icon, main }) => (
-              <ActionableCard
-                key={icon}
-                onPress={onPress}
-                title={title}
-                icon={icon}
-                main={main}
-              />
-            ))}
-          </View>
+      <View
+        style={{
+          flexDirection: 'column',
+          justifyContent: 'space-between',
+          flexGrow: 1,
+        }}
+      >
+        <UserInfo />
+        <View style={[styles.center, styles.actionables]}>
+          {[
+            {
+              onPress: () =>
+                askQuestion(
+                  'Compartir códigos',
+                  '¿Está seguro que desea compartir sus códigos?',
+                  exposeCodes
+                ),
+              title: 'Me contagie',
+              icon: 'share',
+            },
+            {
+              onPress: goToScan,
+              title: 'Escanear',
+              icon: 'camera',
+              main: true,
+            },
+            { onPress: signOut, title: 'Cerrar Sesión', icon: 'logout' },
+          ].map(({ onPress, title, icon, main }) => (
+            <ActionableCard
+              key={icon}
+              onPress={onPress}
+              title={title}
+              icon={icon}
+              main={main}
+            />
+          ))}
         </View>
       </View>
     </View>
