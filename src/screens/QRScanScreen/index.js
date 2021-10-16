@@ -57,7 +57,7 @@ function QRScanScreen({ navigation }) {
       ).catch(error => openAlert('Error', error.response.data.reason));
       openAlert(
         'Éxito',
-        `La visita en ${parsedData.space} de ${parsedData.name} se escaneó exitosamente`
+        `El QR de ${parsedData.space} de ${parsedData.name} se escaneó exitosamente`
       );
     } catch {
       openAlert('Error', 'Ocurrió un error al escanear, vuelva a internarlo');
@@ -86,12 +86,12 @@ function QRScanScreen({ navigation }) {
               }}
               style={styles.cancelButton}
             >
-              <Text style={styles.cancelText}>Cancel</Text>
+              <Text style={styles.cancelText}>Cancelar</Text>
             </TouchableOpacity>
           </View>
         </Camera>
       ) : (
-        <Text>No access to camera</Text>
+        <Text>No hay acceso a la camara</Text>
       )}
     </SafeAreaView>
   );

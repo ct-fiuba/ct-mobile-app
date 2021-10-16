@@ -1,18 +1,62 @@
 import 'react-native-get-random-values';
 import { v4 as uuidv4 } from 'uuid';
 import { withGenuxToken } from './CTAuthServerService';
-import { saveScan, getUserInfo, getLastVisit, clearLastVisitInfo } from './LocalStorageService';
+import {
+  saveScan,
+  getUserInfo,
+  getLastVisit,
+  clearLastVisitInfo,
+} from './LocalStorageService';
 import { saveVisit, addExitTimestamp } from './CTUserAPIService';
+
+import { msToMinutes } from '../utils/dateFormat';
 
 const EXIT_SCAN_VISIT_DURATION_WINDOW_MULTIPLIER = 3;
 const NEW_SCAN_CLOSING_LAST_VISIT_WINDOW_MULTIPLIER = 2;
 
-// Function called when a QR code is scanned.
-export const scan = async (scanCode, isExit, estimatedVisitDuration) => {
-  if (!isExit) {
-    return await scanEntrance(scanCode, estimatedVisitDuration);
+// Check if the last visit is under the time window where it is still closable, and if it has the same scanCode as the exit QR code recently scanned
+export const isExitScanClosingLastVisit = (lastVisit, scanCode) => {
+  if (!lastVisit || lastVisit.scanCode !== scanCode) {
+    return false;
   }
-  return await scanExit(scanCode, estimatedVisitDuration);
+  const minutesDifference = msToMinutes(
+    new Date() - new Date(lastVisit.entranceTimestamp)
+  );
+  const maximumDifference =
+    parseInt(lastVisit.estimatedVisitDuration) *
+    EXIT_SCAN_VISIT_DURATION_WINDOW_MULTIPLIER;
+  return minutesDifference <= maximumDifference;
+};
+
+// Check if the last visit is under the time window where it is still closable
+export const isLastVisitStillClosable = lastVisit => {
+  const minutesDifference = msToMinutes(
+    new Date() - new Date(lastVisit.entranceTimestamp)
+  );
+  const maximumDifference =
+    parseInt(lastVisit.estimatedVisitDuration) *
+    NEW_SCAN_CLOSING_LAST_VISIT_WINDOW_MULTIPLIER;
+  return minutesDifference <= maximumDifference;
+};
+
+// Update the last visit exitTimestamp if it is still closable.
+const addExitTimestampToLastVisit = async lastVisit => {
+  if (!isLastVisitStillClosable(lastVisit)) {
+    clearLastVisitInfo();
+    return;
+  }
+  const exitTimestamp = new Date();
+  const value = {
+    scanCode: lastVisit.scanCode,
+    exitTimestamp,
+    userGeneratedCode: lastVisit.userGeneratedCode,
+  };
+  return withGenuxToken(addExitTimestamp(value))
+    .then(res => {
+      clearLastVisitInfo();
+      return res;
+    })
+    .catch(error => error.response);
 };
 
 // Function called when the QR code is an entrance code. Creates a new visit with the entrance QR code scanned. If there last visit is open and closable,
@@ -43,7 +87,7 @@ const scanEntrance = async (scanCode, estimatedVisitDuration) => {
   };
   return withGenuxToken(saveVisit(value))
     .then(res => {
-      value['estimatedVisitDuration'] = estimatedVisitDuration;
+      value.estimatedVisitDuration = estimatedVisitDuration;
       saveScan(value);
       return res;
     })
@@ -69,7 +113,9 @@ const scanExit = async (scanCode, estimatedVisitDuration) => {
   const value = {
     scanCode,
     exitTimestamp,
-    userGeneratedCode: closingLastVisit ? lastVisit.userGeneratedCode : uuidv4(),
+    userGeneratedCode: closingLastVisit
+      ? lastVisit.userGeneratedCode
+      : uuidv4(),
     ...(userInfo && {
       vaccinated: userInfo.vaccinated ? userInfo.dose : 0,
       ...(userInfo.vaccinated && {
@@ -87,7 +133,7 @@ const scanExit = async (scanCode, estimatedVisitDuration) => {
       if (closingLastVisit) {
         clearLastVisitInfo();
       } else {
-        value['estimatedVisitDuration'] = estimatedVisitDuration;
+        value.estimatedVisitDuration = estimatedVisitDuration;
         saveScan(value);
       }
       return res;
@@ -95,44 +141,10 @@ const scanExit = async (scanCode, estimatedVisitDuration) => {
     .catch(error => error.response);
 };
 
-// Update the last visit exitTimestamp if it is still closable.
-const addExitTimestampToLastVisit = async (lastVisit) => {
-  if (!isLastVisitStillClosable(lastVisit)) {
-    clearLastVisitInfo();
-    return;
+// Function called when a QR code is scanned.
+export const scan = async (scanCode, isExit, estimatedVisitDuration) => {
+  if (!isExit) {
+    return scanEntrance(scanCode, estimatedVisitDuration);
   }
-  const exitTimestamp = new Date();
-  const value = {
-    scanCode: lastVisit.scanCode,
-    exitTimestamp,
-    userGeneratedCode: lastVisit.userGeneratedCode,
-  };
-  return withGenuxToken(addExitTimestamp(value))
-    .then(res => {
-      clearLastVisitInfo();
-      return res;
-    })
-    .catch(error => error.response);
-}
-
-// Check if the last visit is under the time window where it is still closable, and if it has the same scanCode as the exit QR code recently scanned
-export const isExitScanClosingLastVisit = (lastVisit, scanCode) => {
-  if (!lastVisit || lastVisit.scanCode !== scanCode) {
-    return false;
-  }
-  const minutesDifference = msToMinutes(new Date() - new Date(lastVisit.entranceTimestamp));
-  const maximumDifference = parseInt(lastVisit.estimatedVisitDuration) * EXIT_SCAN_VISIT_DURATION_WINDOW_MULTIPLIER;
-  return minutesDifference <= maximumDifference;
-}
-
-// Check if the last visit is under the time window where it is still closable
-export const isLastVisitStillClosable = (lastVisit) => {
-  const minutesDifference = msToMinutes(new Date() - new Date(lastVisit.entranceTimestamp));
-  const maximumDifference = parseInt(lastVisit.estimatedVisitDuration) * NEW_SCAN_CLOSING_LAST_VISIT_WINDOW_MULTIPLIER;
-  return minutesDifference <= maximumDifference;
-}
-
-// Miliseconds to Minutes
-const msToMinutes = (ms) => {
-  return Math.floor(ms / 1000 / 60);
-}
+  return scanExit(scanCode, estimatedVisitDuration);
+};
