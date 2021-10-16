@@ -32,7 +32,6 @@ function LoginScreen({ navigation }) {
     setError('');
     signIn(email, password)
       .then(response => {
-        console.error(response.data);
         saveSession(response.data);
         dispatch(actionCreators.setSession(response.data));
       })

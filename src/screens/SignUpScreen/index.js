@@ -64,7 +64,6 @@ function SignUpScreen({ navigation }) {
             <TextInput
               style={styles.input}
               placeholder="Email"
-              placeholderTextColor="#blue"
               returnKeyType="next"
               keyboardType="email-address"
               textContentType="emailAddress"
