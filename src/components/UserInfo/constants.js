@@ -1,7 +1,7 @@
 export const VACCINES = [
   {
     id: 0,
-    name: 'SputnikV',
+    name: 'Sputnik V',
   },
   {
     id: 1,
@@ -9,6 +9,14 @@ export const VACCINES = [
   },
   {
     id: 2,
-    name: 'Astra seneca',
+    name: 'AstraZeneca',
+  },
+  {
+    id: 3,
+    name: 'Covishield',
+  },
+  {
+    id: 4,
+    name: 'Sinopharm',
   },
 ];
