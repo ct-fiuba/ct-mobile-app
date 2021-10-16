@@ -1,4 +1,5 @@
 import { StyleSheet } from 'react-native';
+import { COLORS } from '../../styles/colors';
 
 const styles = StyleSheet.create({
   common: {
@@ -8,13 +9,20 @@ const styles = StyleSheet.create({
     padding: 15,
     shadowOffset: { width: 1, height: 2 },
     shadowOpacity: 0.2,
-    height: 100,
+    height: 70,
     backgroundColor: '#fff',
+    marginHorizontal: 5,
+  },
+  mainContainer: {
+    backgroundColor: COLORS.secondary,
   },
   title: {
     fontWeight: '600',
-    fontSize: 15,
+    fontSize: 12,
     textAlign: 'center',
+  },
+  mainTitle: {
+    color: 'white',
   },
 });
 

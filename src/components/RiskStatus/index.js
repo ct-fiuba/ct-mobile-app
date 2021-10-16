@@ -1,25 +1,29 @@
-import React from 'react';
-import { View, Text, Platform } from 'react-native';
-import {
-  setStatusBarBackgroundColor,
-  setStatusBarStyle,
-} from 'expo-status-bar';
+import React, { useEffect, useState } from 'react';
+import { View, Text } from 'react-native';
+
+import { getSessionActive } from '../../services/LocalStorageService';
 
 import { RISK_INFO } from '../../constants/risk';
 import styles from './styles';
 
 export default function RiskStatus({ risk }) {
-  if (Platform.OS === 'android') {
-    setStatusBarBackgroundColor(RISK_INFO[risk].color);
-    setStatusBarStyle('auto');
-  }
+  const [sessionInfo, setSessionInfo] = useState({});
+
+  useEffect(() => {
+    async function fetchData() {
+      const session = await getSessionActive();
+      setSessionInfo(JSON.parse(session));
+    }
+    fetchData();
+  }, [setSessionInfo]);
 
   return (
     <View style={[styles.common, styles[RISK_INFO[risk].id]]}>
       <Text
         style={styles.title}
       >{`Nivel de riesgo: ${RISK_INFO[risk].title}`}</Text>
-      <Text>{RISK_INFO[risk].text}</Text>
+      <Text style={styles.small}>{sessionInfo.email}</Text>
+      <Text style={styles.small}>{sessionInfo.dni}</Text>
     </View>
   );
 }

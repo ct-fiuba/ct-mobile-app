@@ -1,5 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, SafeAreaView, Alert } from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  SafeAreaView,
+  Alert,
+  TouchableOpacity,
+} from 'react-native';
 import { Camera } from 'expo-camera';
 
 import { scan } from '../../services/ScanService';
@@ -43,9 +50,11 @@ function QRScanScreen({ navigation }) {
     try {
       setScanned(true);
       const parsedData = JSON.parse(data);
-      scan(parsedData.id, parsedData.isExit, parsedData.estimatedVisitDuration).catch(error =>
-        openAlert('Error', error.response.data.reason)
-      );
+      scan(
+        parsedData.id,
+        parsedData.isExit,
+        parsedData.estimatedVisitDuration
+      ).catch(error => openAlert('Error', error.response.data.reason));
       openAlert(
         'Éxito',
         `La visita en ${parsedData.space} de ${parsedData.name} se escaneó exitosamente`
@@ -70,7 +79,16 @@ function QRScanScreen({ navigation }) {
             <View style={styles.focused} />
             <View style={styles.layerRight} />
           </View>
-          <View style={styles.layerBottom}></View>
+          <View style={styles.layerBottom}>
+            <TouchableOpacity
+              onPress={() => {
+                navigation.navigate('Inicio');
+              }}
+              style={styles.cancelButton}
+            >
+              <Text style={styles.cancelText}>Cancel</Text>
+            </TouchableOpacity>
+          </View>
         </Camera>
       ) : (
         <Text>No access to camera</Text>

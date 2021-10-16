@@ -4,11 +4,20 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 import styles from './styles';
 
-export default function ActionableCard({ onPress, title, icon }) {
+export default function ActionableCard({ onPress, title, icon, main }) {
   return (
-    <TouchableOpacity onPress={onPress} style={styles.common}>
-      <MaterialCommunityIcons name={icon} size={30} />
-      <Text style={styles.title}>{title}</Text>
+    <TouchableOpacity
+      onPress={onPress}
+      style={[styles.common, main ? styles.mainContainer : null]}
+    >
+      <MaterialCommunityIcons
+        name={icon}
+        size={20}
+        color={main ? 'white' : 'black'}
+      />
+      <Text style={[styles.title, main ? styles.mainTitle : null]}>
+        {title}
+      </Text>
     </TouchableOpacity>
   );
 }

@@ -4,7 +4,6 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 import DashboardScreen from './DashboardScreen';
-import ProfileScreen from './ProfileScreen';
 // import LoadingScreen from '../screens/LoadingScreen';
 import LoginScreen from './LoginScreen';
 import SignUpScreen from './SignUpScreen';
@@ -19,46 +18,24 @@ import { COLORS } from '../styles/colors';
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
-function TabNavigatorScreen() {
+function AppStack() {
   return (
-    <Tab.Navigator
-      tabBarOptions={{
-        activeTintColor: COLORS.main,
-        inactiveTintColor: 'gray',
-      }}
-      initialRouteName="Escanear"
-    >
-      <Tab.Screen
+    <Stack.Navigator headerMode="none">
+      <Stack.Screen
         name="Inicio"
         component={DashboardScreen}
         options={{
-          tabBarIcon: ({ focused, size }) => (
-            <TabBarIcon name="md-home" focused={focused} size={size} />
-          ),
           unmountOnBlur: false,
         }}
       />
-      <Tab.Screen
+      <Stack.Screen
         name="Escanear"
         component={QRScanScreen}
         options={{
-          tabBarIcon: ({ focused, size }) => (
-            <TabBarIcon name="md-qr-scanner" focused={focused} size={size} />
-          ),
           unmountOnBlur: true,
         }}
       />
-      <Tab.Screen
-        name="Perfil"
-        component={ProfileScreen}
-        options={{
-          tabBarIcon: ({ focused, size }) => (
-            <TabBarIcon name="md-person" focused={focused} size={size} />
-          ),
-          unmountOnBlur: true,
-        }}
-      />
-    </Tab.Navigator>
+    </Stack.Navigator>
   );
 }
 
@@ -87,7 +64,7 @@ export default function Screens() {
     <NavigationContainer>
       <Stack.Navigator headerMode="none">
         {isLoggedIn ? (
-          <Stack.Screen name="App" component={TabNavigatorScreen} />
+          <Stack.Screen name="App" component={AppStack} />
         ) : (
           <>
             <Stack.Screen name="LoginScreen" component={LoginScreen} />

@@ -1,20 +1,6 @@
 import { StyleSheet } from 'react-native';
 
-import { COLORS } from '../../styles/colors';
-
 const styles = StyleSheet.create({
-  header: {
-    height: 150,
-    borderBottomEndRadius: 50,
-    borderBottomStartRadius: 50,
-    backgroundColor: COLORS.main,
-    justifyContent: 'center',
-  },
-  headerContent: {
-    alignContent: 'center',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
   name: {
     fontWeight: '600',
     fontSize: 20,
