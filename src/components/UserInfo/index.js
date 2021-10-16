@@ -88,7 +88,7 @@ function UserInfo() {
             setEditable(!editable);
           }}
         >
-          <Text>{editable ? 'Guardar' : 'Editar'}</Text>
+          <Text mr={5}>{editable ? 'Guardar' : 'Editar'}</Text>
           <Icon
             color="black"
             name={editable ? 'save' : 'edit'}
