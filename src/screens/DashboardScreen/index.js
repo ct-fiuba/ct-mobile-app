@@ -1,6 +1,5 @@
 import React, { useCallback, useState, useEffect } from 'react';
 import { View, Alert } from 'react-native';
-import { FlatGrid } from 'react-native-super-grid';
 import { CT_BILLBOARD_INTERVAL } from 'react-native-dotenv';
 
 import { useDispatch } from '../../contexts/AuthContext';
@@ -19,8 +18,9 @@ import ActionableCard from '../../components/ActionableCard';
 import useInterval from '../../utils/useInterval';
 
 import styles from './styles';
+import UserInfo from '../../components/UserInfo';
 
-function DashboardScreen() {
+function DashboardScreen({ navigation }) {
   const dispatch = useDispatch();
 
   const [risk, setRisk] = useState(0);
@@ -46,6 +46,23 @@ function DashboardScreen() {
     );
   };
 
+  const askQuestion = (title, message, onAccept) => {
+    Alert.alert(
+      title,
+      message,
+      [
+        {
+          text: 'Aceptar',
+          onPress: onAccept,
+        },
+        {
+          text: 'Cancelar',
+        },
+      ],
+      { cancelable: false }
+    );
+  };
+
   useInterval(async () => {
     await updateRisk(
       risk,
@@ -55,7 +72,7 @@ function DashboardScreen() {
       },
       error => openAlert('Error', error.reason)
     );
-  }, CT_BILLBOARD_INTERVAL);
+  }, parseInt(CT_BILLBOARD_INTERVAL));
 
   const exposeCodes = useCallback(async () => {
     const codes = await getCodes();
@@ -70,21 +87,50 @@ function DashboardScreen() {
     await removeSession();
     dispatch(actionCreators.resetSession());
   }, [dispatch]);
+
+  const goToScan = useCallback(async () => {
+    navigation.navigate('Escanear');
+  }, [navigation]);
   return (
     <View>
       <RiskStatus risk={risk} />
-      <View style={styles.center}>
-        <FlatGrid
-          itemDimension={110}
-          style={styles.actionables}
-          data={[
-            { onPress: exposeCodes, title: 'Compartir codigos', icon: 'share' },
-            { onPress: signOut, title: 'Salir', icon: 'logout' },
-          ]}
-          renderItem={({ item: { onPress, title, icon } }) => (
-            <ActionableCard onPress={onPress} title={title} icon={icon} />
-          )}
-        />
+      <View
+        style={{
+          flexDirection: 'column',
+          justifyContent: 'space-between',
+          flexGrow: 1,
+        }}
+      >
+        <UserInfo />
+        <View style={[styles.center, styles.actionables]}>
+          {[
+            {
+              onPress: () =>
+                askQuestion(
+                  'Compartir códigos',
+                  '¿Está seguro que desea compartir sus códigos?',
+                  exposeCodes
+                ),
+              title: 'Me contagie',
+              icon: 'share',
+            },
+            {
+              onPress: goToScan,
+              title: 'Escanear',
+              icon: 'camera',
+              main: true,
+            },
+            { onPress: signOut, title: 'Cerrar Sesión', icon: 'logout' },
+          ].map(({ onPress, title, icon, main }) => (
+            <ActionableCard
+              key={icon}
+              onPress={onPress}
+              title={title}
+              icon={icon}
+              main={main}
+            />
+          ))}
+        </View>
       </View>
     </View>
   );

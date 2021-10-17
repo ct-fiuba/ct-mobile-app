@@ -3,11 +3,12 @@ import { StyleSheet } from 'react-native';
 const styles = StyleSheet.create({
   actionables: {
     flexDirection: 'row',
-    width: '100%',
-    margin: 0,
+    justifyContent: 'space-between',
   },
   center: {
-    margin: 10,
+    margin: 20,
+    marginTop: 0,
+    marginBottom: 0,
   },
 });
 

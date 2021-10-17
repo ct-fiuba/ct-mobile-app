@@ -5,6 +5,7 @@ import {
   getSessionActive,
   saveSession,
   SCAN_WINDOW,
+  removeSession,
 } from './LocalStorageService';
 import { refreshAccessToken, withGenuxToken } from './CTAuthServerService';
 
@@ -15,13 +16,17 @@ const userApi = axios.create({
 userApi.interceptors.response.use(null, async error => {
   if (error.config && error.response && error.response.status === 401) {
     const session = await getSessionActive();
-    return refreshAccessToken(JSON.parse(session).refreshToken).then(
-      refreshResponse => {
+    return refreshAccessToken(JSON.parse(session).refreshToken)
+      .then(refreshResponse => {
         saveSession(refreshResponse.data);
         error.config.headers['access-token'] = refreshResponse.data.accessToken;
         return userApi.request(error.config);
-      }
-    );
+      })
+      .catch(async error => {
+        console.error('REFRESH ERRORED', error);
+        await removeSession();
+        return Promise.reject(new Error('Sesión expirada'));
+      });
   }
 
   return Promise.reject(error);

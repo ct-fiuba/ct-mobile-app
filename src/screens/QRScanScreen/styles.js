@@ -55,6 +55,19 @@ const styles = StyleSheet.create({
     backgroundColor: opacity,
     justifyContent: 'flex-end',
   },
+  cancelButton: {
+    backgroundColor: 'red',
+    margin: 20,
+    height: 40,
+    borderRadius: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  cancelText: {
+    color: 'white',
+    textAlign: 'center',
+    fontSize: 18,
+  },
   ...layoutStyles,
 });
 
