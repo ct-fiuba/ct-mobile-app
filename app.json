@@ -2,6 +2,7 @@
   "expo": {
     "name": "Contact Tracing",
     "slug": "contact-tracing-fiuba",
+    "owner": "ct-fiuba",
     "privacy": "public",
     "platforms": [
       "ios",
@@ -23,7 +24,8 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.fiuba.contact-tracing"
     },
     "android": {
       "package": "com.fiuba.contact_tracing"
