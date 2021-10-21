@@ -70,7 +70,7 @@ const scanEntrance = async (scanCode, estimatedVisitDuration) => {
     await addExitTimestampToLastVisit(lastVisit);
   }
   const value = {
-    scanCode,
+    spaceId: scanCode,
     entranceTimestamp,
     userGeneratedCode: uuidv4(),
     ...(userInfo && {
@@ -79,9 +79,9 @@ const scanEntrance = async (scanCode, estimatedVisitDuration) => {
         vaccineReceived: userInfo.vaccine.name, // TODO: Maybe is better to send the id
         vaccinatedDate: userInfo.lastDoseDate,
       }),
-      covidRecovered: userInfo.beenInfected,
+      illnessRecovered: userInfo.beenInfected,
       ...(userInfo.beenInfected && {
-        covidRecoveredDate: userInfo.medicalDischargeDate,
+        illnessRecoveredDate: userInfo.medicalDischargeDate,
       }),
     }),
   };
@@ -111,7 +111,7 @@ const scanExit = async (scanCode, estimatedVisitDuration) => {
   }
 
   const value = {
-    scanCode,
+    spaceId: scanCode,
     exitTimestamp,
     userGeneratedCode: closingLastVisit
       ? lastVisit.userGeneratedCode
@@ -122,9 +122,9 @@ const scanExit = async (scanCode, estimatedVisitDuration) => {
         vaccineReceived: userInfo.vaccine.name, // TODO: Maybe is better to send the id
         vaccinatedDate: userInfo.lastDoseDate,
       }),
-      covidRecovered: userInfo.beenInfected,
+      illnessRecovered: userInfo.beenInfected,
       ...(userInfo.beenInfected && {
-        covidRecoveredDate: userInfo.medicalDischargeDate,
+        illnessRecoveredDate: userInfo.medicalDischargeDate,
       }),
     }),
   };
