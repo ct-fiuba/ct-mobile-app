@@ -44,7 +44,6 @@ authApi.interceptors.response.use(null, async error => {
         return authApi.request(error.config);
       })
       .catch(async error => {
-        console.error('REFRESH ERRORED', error);
         await removeSession();
         return Promise.reject(new Error('Sesión expirada'));
       });
