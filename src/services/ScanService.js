@@ -9,7 +9,7 @@ import {
 } from './LocalStorageService';
 import { saveVisit, addExitTimestamp } from './CTUserAPIService';
 
-import { msToMinutes } from '../utils/dateFormat';
+import { msToMinutes, parseDate } from '../utils/dateFormat';
 
 const EXIT_SCAN_VISIT_DURATION_WINDOW_MULTIPLIER = 3;
 const NEW_SCAN_CLOSING_LAST_VISIT_WINDOW_MULTIPLIER = 2;
@@ -42,7 +42,7 @@ export const isLastVisitStillClosable = lastVisit => {
 // Update the last visit exitTimestamp if it is still closable.
 const addExitTimestampToLastVisit = async lastVisit => {
   if (!isLastVisitStillClosable(lastVisit)) {
-    clearLastVisitInfo();
+    await clearLastVisitInfo();
     return;
   }
   const exitTimestamp = new Date();
@@ -52,8 +52,8 @@ const addExitTimestampToLastVisit = async lastVisit => {
     userGeneratedCode: lastVisit.userGeneratedCode,
   };
   return withGenuxToken(addExitTimestamp(value))
-    .then(res => {
-      clearLastVisitInfo();
+    .then(async res => {
+      await clearLastVisitInfo();
       return res;
     })
     .catch(error => error.response);
@@ -63,6 +63,7 @@ const addExitTimestampToLastVisit = async lastVisit => {
 // it will update its exitTimestamp field.
 const scanEntrance = async (scanCode, estimatedVisitDuration) => {
   const entranceTimestamp = new Date();
+  console.log('entranceTimestamp', entranceTimestamp);
   const userInfo = await getUserInfo();
   const lastVisit = await getLastVisit();
   // if the we have a last visit we need to evaluate if we need to close it
@@ -77,11 +78,11 @@ const scanEntrance = async (scanCode, estimatedVisitDuration) => {
       vaccinated: userInfo.vaccinated ? userInfo.dose : 0,
       ...(userInfo.vaccinated && {
         vaccineReceived: userInfo.vaccine.name, // TODO: Maybe is better to send the id
-        vaccinatedDate: userInfo.lastDoseDate,
+        vaccinatedDate: parseDate(userInfo.lastDoseDate),
       }),
       illnessRecovered: userInfo.beenInfected,
       ...(userInfo.beenInfected && {
-        illnessRecoveredDate: userInfo.medicalDischargeDate,
+        illnessRecoveredDate: parseDate(userInfo.medicalDischargeDate),
       }),
     }),
   };
@@ -120,18 +121,20 @@ const scanExit = async (scanCode, estimatedVisitDuration) => {
       vaccinated: userInfo.vaccinated ? userInfo.dose : 0,
       ...(userInfo.vaccinated && {
         vaccineReceived: userInfo.vaccine.name, // TODO: Maybe is better to send the id
-        vaccinatedDate: userInfo.lastDoseDate,
+        vaccinatedDate: parseDate(userInfo.lastDoseDate),
       }),
       illnessRecovered: userInfo.beenInfected,
       ...(userInfo.beenInfected && {
-        illnessRecoveredDate: userInfo.medicalDischargeDate,
+        illnessRecoveredDate: parseDate(userInfo.medicalDischargeDate),
       }),
     }),
   };
+
+  console.log(value);
   return withGenuxToken(addExitTimestamp(value))
-    .then(res => {
+    .then(async res => {
       if (closingLastVisit) {
-        clearLastVisitInfo();
+        await clearLastVisitInfo();
       } else {
         value.estimatedVisitDuration = estimatedVisitDuration;
         saveScan(value);
