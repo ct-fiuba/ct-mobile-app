@@ -12,7 +12,7 @@ describe('Testing the two isolated functions that determine if the last visit sh
 				entranceTimestamp,
 				vaccinated: 0,
 				covidRecovered: false,
-				scanCode: "612bd2bdf9cd7d0019fb8a41",
+				spaceId: "612bd2bdf9cd7d0019fb8a41",
 				userGeneratedCode: "1982ec17-91a7-43e3-8152-7e70e899d5a2",
 				estimatedVisitDuration
 			}
@@ -29,7 +29,7 @@ describe('Testing the two isolated functions that determine if the last visit sh
 				entranceTimestamp,
 				vaccinated: 0,
 				covidRecovered: false,
-				scanCode: "612bd2bdf9cd7d0019fb8a41",
+				spaceId: "612bd2bdf9cd7d0019fb8a41",
 				userGeneratedCode: "1982ec17-91a7-43e3-8152-7e70e899d5a2",
 				estimatedVisitDuration
 			}
@@ -46,7 +46,7 @@ describe('Testing the two isolated functions that determine if the last visit sh
 				entranceTimestamp,
 				vaccinated: 0,
 				covidRecovered: false,
-				scanCode: "612bd2bdf9cd7d0019fb8a41",
+				spaceId: "612bd2bdf9cd7d0019fb8a41",
 				userGeneratedCode: "1982ec17-91a7-43e3-8152-7e70e899d5a2",
 				estimatedVisitDuration
 			}
@@ -61,17 +61,17 @@ describe('Testing the two isolated functions that determine if the last visit sh
 			const entranceTimestamp = new Date();
 			entranceTimestamp.setMinutes(entranceTimestamp.getMinutes() - 1);
 			const estimatedVisitDuration = 60;
-			const scanCode = "612bd2bdf9cd7d0019fb8a41";
+			const spaceId = "612bd2bdf9cd7d0019fb8a41";
 			const lastVisit = {
 				entranceTimestamp,
 				vaccinated: 0,
 				covidRecovered: false,
-				scanCode,
+				spaceId,
 				userGeneratedCode: "1982ec17-91a7-43e3-8152-7e70e899d5a2",
 				estimatedVisitDuration
 			}
 
-			const res = scanService.isExitScanClosingLastVisit(lastVisit, scanCode);
+			const res = scanService.isExitScanClosingLastVisit(lastVisit, spaceId);
 			expect(res).toBeTruthy();
 		});
 
@@ -79,18 +79,18 @@ describe('Testing the two isolated functions that determine if the last visit sh
 			const entranceTimestamp = new Date();
 			entranceTimestamp.setMinutes(entranceTimestamp.getMinutes() - 1);
 			const estimatedVisitDuration = 60;
-			const scanCodeLastVisit = "612bd2bdf9cd7d0019fb8a41";
-			const scanCodeCurrentScan = "612bd2bdf9cd7d0019fb8a42";
+			const spaceIdLastVisit = "612bd2bdf9cd7d0019fb8a41";
+			const spaceIdCurrentScan = "612bd2bdf9cd7d0019fb8a42";
 			const lastVisit = {
 				entranceTimestamp,
 				vaccinated: 0,
 				covidRecovered: false,
-				scanCode: scanCodeLastVisit,
+				spaceId: spaceIdLastVisit,
 				userGeneratedCode: "1982ec17-91a7-43e3-8152-7e70e899d5a2",
 				estimatedVisitDuration
 			}
 
-			const res = scanService.isExitScanClosingLastVisit(lastVisit, scanCodeCurrentScan);
+			const res = scanService.isExitScanClosingLastVisit(lastVisit, spaceIdCurrentScan);
 			expect(res).toBeFalsy();
 		});
 
@@ -98,17 +98,17 @@ describe('Testing the two isolated functions that determine if the last visit sh
 			const entranceTimestamp = new Date();
 			entranceTimestamp.setMinutes(entranceTimestamp.getMinutes() - 29);
 			const estimatedVisitDuration = 10;
-			const scanCode = "612bd2bdf9cd7d0019fb8a41";
+			const spaceId = "612bd2bdf9cd7d0019fb8a41";
 			const lastVisit = {
 				entranceTimestamp,
 				vaccinated: 0,
 				covidRecovered: false,
-				scanCode,
+				spaceId,
 				userGeneratedCode: "1982ec17-91a7-43e3-8152-7e70e899d5a2",
 				estimatedVisitDuration
 			}
 
-			const res = scanService.isExitScanClosingLastVisit(lastVisit, scanCode);
+			const res = scanService.isExitScanClosingLastVisit(lastVisit, spaceId);
 			expect(res).toBeTruthy();
 		});
 
@@ -116,17 +116,17 @@ describe('Testing the two isolated functions that determine if the last visit sh
 			const entranceTimestamp = new Date();
 			entranceTimestamp.setMinutes(entranceTimestamp.getMinutes() - 31);
 			const estimatedVisitDuration = 10;
-			const scanCode = "612bd2bdf9cd7d0019fb8a41";
+			const spaceId = "612bd2bdf9cd7d0019fb8a41";
 			const lastVisit = {
 				entranceTimestamp,
 				vaccinated: 0,
 				covidRecovered: false,
-				scanCode,
+				spaceId,
 				userGeneratedCode: "1982ec17-91a7-43e3-8152-7e70e899d5a2",
 				estimatedVisitDuration
 			}
 
-			const res = scanService.isExitScanClosingLastVisit(lastVisit, scanCode);
+			const res = scanService.isExitScanClosingLastVisit(lastVisit, spaceId);
 			expect(res).toBeFalsy();
 		});
 	});
