@@ -16,12 +16,7 @@ const NEW_SCAN_CLOSING_LAST_VISIT_WINDOW_MULTIPLIER = 2;
 
 // Check if the last visit is under the time window where it is still closable, and if it has the same spaceId as the exit QR code recently scanned
 export const isExitScanClosingLastVisit = (lastVisit, spaceId) => {
-  console.log("DEBUG TOMI!");
   if (!lastVisit || lastVisit.spaceId !== spaceId) {
-    console.log("!lastVisit || lastVisit.spaceId !== spaceId");
-    console.log("lastVisit: ", lastVisit);
-    console.log("lastVisit.spaceId: ", lastVisit.spaceId);
-    console.log("spaceId: ", spaceId);
     return false;
   }
   const minutesDifference = msToMinutes(
@@ -30,8 +25,6 @@ export const isExitScanClosingLastVisit = (lastVisit, spaceId) => {
   const maximumDifference =
     parseInt(lastVisit.estimatedVisitDuration) *
     EXIT_SCAN_VISIT_DURATION_WINDOW_MULTIPLIER;
-  console.log("minutesDifference: ", minutesDifference);
-  console.log("maximumDifference: ", maximumDifference);
   return minutesDifference <= maximumDifference;
 };
 
