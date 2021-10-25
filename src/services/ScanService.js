@@ -9,14 +9,14 @@ import {
 } from './LocalStorageService';
 import { saveVisit, addExitTimestamp } from './CTUserAPIService';
 
-import { msToMinutes } from '../utils/dateFormat';
+import { msToMinutes, parseDate } from '../utils/dateFormat';
 
 const EXIT_SCAN_VISIT_DURATION_WINDOW_MULTIPLIER = 3;
 const NEW_SCAN_CLOSING_LAST_VISIT_WINDOW_MULTIPLIER = 2;
 
-// Check if the last visit is under the time window where it is still closable, and if it has the same scanCode as the exit QR code recently scanned
-export const isExitScanClosingLastVisit = (lastVisit, scanCode) => {
-  if (!lastVisit || lastVisit.scanCode !== scanCode) {
+// Check if the last visit is under the time window where it is still closable, and if it has the same spaceId as the exit QR code recently scanned
+export const isExitScanClosingLastVisit = (lastVisit, spaceId) => {
+  if (!lastVisit || lastVisit.spaceId !== spaceId) {
     return false;
   }
   const minutesDifference = msToMinutes(
@@ -42,18 +42,18 @@ export const isLastVisitStillClosable = lastVisit => {
 // Update the last visit exitTimestamp if it is still closable.
 const addExitTimestampToLastVisit = async lastVisit => {
   if (!isLastVisitStillClosable(lastVisit)) {
-    clearLastVisitInfo();
+    await clearLastVisitInfo();
     return;
   }
   const exitTimestamp = new Date();
   const value = {
-    scanCode: lastVisit.scanCode,
+    spaceId: lastVisit.spaceId,
     exitTimestamp,
     userGeneratedCode: lastVisit.userGeneratedCode,
   };
   return withGenuxToken(addExitTimestamp(value))
-    .then(res => {
-      clearLastVisitInfo();
+    .then(async res => {
+      await clearLastVisitInfo();
       return res;
     })
     .catch(error => error.response);
@@ -61,7 +61,7 @@ const addExitTimestampToLastVisit = async lastVisit => {
 
 // Function called when the QR code is an entrance code. Creates a new visit with the entrance QR code scanned. If there last visit is open and closable,
 // it will update its exitTimestamp field.
-const scanEntrance = async (scanCode, estimatedVisitDuration) => {
+const scanEntrance = async (spaceId, estimatedVisitDuration) => {
   const entranceTimestamp = new Date();
   const userInfo = await getUserInfo();
   const lastVisit = await getLastVisit();
@@ -70,18 +70,18 @@ const scanEntrance = async (scanCode, estimatedVisitDuration) => {
     await addExitTimestampToLastVisit(lastVisit);
   }
   const value = {
-    spaceId: scanCode,
+    spaceId: spaceId,
     entranceTimestamp,
     userGeneratedCode: uuidv4(),
     ...(userInfo && {
       vaccinated: userInfo.vaccinated ? userInfo.dose : 0,
       ...(userInfo.vaccinated && {
         vaccineReceived: userInfo.vaccine.name, // TODO: Maybe is better to send the id
-        vaccinatedDate: userInfo.lastDoseDate,
+        vaccinatedDate: parseDate(userInfo.lastDoseDate),
       }),
       illnessRecovered: userInfo.beenInfected,
       ...(userInfo.beenInfected && {
-        illnessRecoveredDate: userInfo.medicalDischargeDate,
+        illnessRecoveredDate: parseDate(userInfo.medicalDischargeDate),
       }),
     }),
   };
@@ -95,15 +95,15 @@ const scanEntrance = async (scanCode, estimatedVisitDuration) => {
 };
 
 // Function called when the QR code is an exit code. It will check if the last visit the phone has stored
-// is from the same place (same scanCode) and is still vigent (inside the time window where a visit is
+// is from the same place (same spaceId) and is still vigent (inside the time window where a visit is
 // closable by its exit QR). If those conditions are satisfied, the corresponding visit is updated with
 // the exitTimestamp. If not, a new visit is created, already closed, asuming the user didn't scan the
 // entrance QR.
-const scanExit = async (scanCode, estimatedVisitDuration) => {
+const scanExit = async (spaceId, estimatedVisitDuration) => {
   const exitTimestamp = new Date();
   const userInfo = await getUserInfo();
   const lastVisit = await getLastVisit();
-  const closingLastVisit = isExitScanClosingLastVisit(lastVisit, scanCode);
+  const closingLastVisit = isExitScanClosingLastVisit(lastVisit, spaceId);
 
   // if the we have a last visit but the current exit QR is not closing it, we need to evaluate if we need to close the previous visit
   if (lastVisit && !closingLastVisit) {
@@ -111,7 +111,7 @@ const scanExit = async (scanCode, estimatedVisitDuration) => {
   }
 
   const value = {
-    spaceId: scanCode,
+    spaceId: spaceId,
     exitTimestamp,
     userGeneratedCode: closingLastVisit
       ? lastVisit.userGeneratedCode
@@ -120,18 +120,18 @@ const scanExit = async (scanCode, estimatedVisitDuration) => {
       vaccinated: userInfo.vaccinated ? userInfo.dose : 0,
       ...(userInfo.vaccinated && {
         vaccineReceived: userInfo.vaccine.name, // TODO: Maybe is better to send the id
-        vaccinatedDate: userInfo.lastDoseDate,
+        vaccinatedDate: parseDate(userInfo.lastDoseDate),
       }),
       illnessRecovered: userInfo.beenInfected,
       ...(userInfo.beenInfected && {
-        illnessRecoveredDate: userInfo.medicalDischargeDate,
+        illnessRecoveredDate: parseDate(userInfo.medicalDischargeDate),
       }),
     }),
   };
   return withGenuxToken(addExitTimestamp(value))
-    .then(res => {
+    .then(async res => {
       if (closingLastVisit) {
-        clearLastVisitInfo();
+        await clearLastVisitInfo();
       } else {
         value.estimatedVisitDuration = estimatedVisitDuration;
         saveScan(value);
@@ -142,9 +142,9 @@ const scanExit = async (scanCode, estimatedVisitDuration) => {
 };
 
 // Function called when a QR code is scanned.
-export const scan = async (scanCode, isExit, estimatedVisitDuration) => {
+export const scan = async (spaceId, isExit, estimatedVisitDuration) => {
   if (!isExit) {
-    return scanEntrance(scanCode, estimatedVisitDuration);
+    return scanEntrance(spaceId, estimatedVisitDuration);
   }
-  return scanExit(scanCode, estimatedVisitDuration);
+  return scanExit(spaceId, estimatedVisitDuration);
 };

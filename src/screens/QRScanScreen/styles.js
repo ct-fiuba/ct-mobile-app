@@ -17,7 +17,7 @@ const styles = StyleSheet.create({
   title: {
     color: '#fff',
     fontSize: 30,
-    marginTop: 30,
+    marginTop: 40,
   },
   button: {
     justifyContent: 'center',
