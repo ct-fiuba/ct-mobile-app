@@ -42,7 +42,7 @@ export const isLastVisitStillClosable = lastVisit => {
 // Update the last visit exitTimestamp if it is still closable.
 const addExitTimestampToLastVisit = async lastVisit => {
   if (!isLastVisitStillClosable(lastVisit)) {
-    clearLastVisitInfo();
+    await clearLastVisitInfo();
     return;
   }
   const exitTimestamp = new Date();
@@ -52,8 +52,8 @@ const addExitTimestampToLastVisit = async lastVisit => {
     userGeneratedCode: lastVisit.userGeneratedCode,
   };
   return withGenuxToken(addExitTimestamp(value))
-    .then(res => {
-      clearLastVisitInfo();
+    .then(async res => {
+      await clearLastVisitInfo();
       return res;
     })
     .catch(error => error.response);
@@ -129,9 +129,9 @@ const scanExit = async (spaceId, estimatedVisitDuration) => {
     }),
   };
   return withGenuxToken(addExitTimestamp(value))
-    .then(res => {
+    .then(async res => {
       if (closingLastVisit) {
-        clearLastVisitInfo();
+        await clearLastVisitInfo();
       } else {
         value.estimatedVisitDuration = estimatedVisitDuration;
         saveScan(value);

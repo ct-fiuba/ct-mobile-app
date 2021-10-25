@@ -61,5 +61,5 @@ export const getLastVisit = async () => {
 };
 
 export const clearLastVisitInfo = async () => {
-  AsyncStorage.setItem('ct-last-visit', '');
+  await AsyncStorage.setItem('ct-last-visit', '');
 };
