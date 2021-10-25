@@ -53,7 +53,7 @@ export const sendCodes = codes =>
       withGenuxToken(genuxToken =>
         userApi.post(
           '/infected',
-          { userGeneratedCode: code.userGeneratedCode },
+          { userGeneratedCode: code.userGeneratedCode, spaceId: code.spaceId },
           {
             headers: { 'genux-token': genuxToken },
           }
