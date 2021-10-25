@@ -14,9 +14,14 @@ import { msToMinutes, parseDate } from '../utils/dateFormat';
 const EXIT_SCAN_VISIT_DURATION_WINDOW_MULTIPLIER = 3;
 const NEW_SCAN_CLOSING_LAST_VISIT_WINDOW_MULTIPLIER = 2;
 
-// Check if the last visit is under the time window where it is still closable, and if it has the same scanCode as the exit QR code recently scanned
-export const isExitScanClosingLastVisit = (lastVisit, scanCode) => {
-  if (!lastVisit || lastVisit.scanCode !== scanCode) {
+// Check if the last visit is under the time window where it is still closable, and if it has the same spaceId as the exit QR code recently scanned
+export const isExitScanClosingLastVisit = (lastVisit, spaceId) => {
+  console.log("DEBUG TOMI!");
+  if (!lastVisit || lastVisit.spaceId !== spaceId) {
+    console.log("!lastVisit || lastVisit.spaceId !== spaceId");
+    console.log("lastVisit: ", lastVisit);
+    console.log("lastVisit.spaceId: ", lastVisit.spaceId);
+    console.log("spaceId: ", spaceId);
     return false;
   }
   const minutesDifference = msToMinutes(
@@ -25,6 +30,8 @@ export const isExitScanClosingLastVisit = (lastVisit, scanCode) => {
   const maximumDifference =
     parseInt(lastVisit.estimatedVisitDuration) *
     EXIT_SCAN_VISIT_DURATION_WINDOW_MULTIPLIER;
+  console.log("minutesDifference: ", minutesDifference);
+  console.log("maximumDifference: ", maximumDifference);
   return minutesDifference <= maximumDifference;
 };
 
@@ -47,7 +54,7 @@ const addExitTimestampToLastVisit = async lastVisit => {
   }
   const exitTimestamp = new Date();
   const value = {
-    scanCode: lastVisit.scanCode,
+    spaceId: lastVisit.spaceId,
     exitTimestamp,
     userGeneratedCode: lastVisit.userGeneratedCode,
   };
@@ -61,7 +68,7 @@ const addExitTimestampToLastVisit = async lastVisit => {
 
 // Function called when the QR code is an entrance code. Creates a new visit with the entrance QR code scanned. If there last visit is open and closable,
 // it will update its exitTimestamp field.
-const scanEntrance = async (scanCode, estimatedVisitDuration) => {
+const scanEntrance = async (spaceId, estimatedVisitDuration) => {
   const entranceTimestamp = new Date();
   console.log('entranceTimestamp', entranceTimestamp);
   const userInfo = await getUserInfo();
@@ -71,7 +78,7 @@ const scanEntrance = async (scanCode, estimatedVisitDuration) => {
     await addExitTimestampToLastVisit(lastVisit);
   }
   const value = {
-    spaceId: scanCode,
+    spaceId: spaceId,
     entranceTimestamp,
     userGeneratedCode: uuidv4(),
     ...(userInfo && {
@@ -96,15 +103,15 @@ const scanEntrance = async (scanCode, estimatedVisitDuration) => {
 };
 
 // Function called when the QR code is an exit code. It will check if the last visit the phone has stored
-// is from the same place (same scanCode) and is still vigent (inside the time window where a visit is
+// is from the same place (same spaceId) and is still vigent (inside the time window where a visit is
 // closable by its exit QR). If those conditions are satisfied, the corresponding visit is updated with
 // the exitTimestamp. If not, a new visit is created, already closed, asuming the user didn't scan the
 // entrance QR.
-const scanExit = async (scanCode, estimatedVisitDuration) => {
+const scanExit = async (spaceId, estimatedVisitDuration) => {
   const exitTimestamp = new Date();
   const userInfo = await getUserInfo();
   const lastVisit = await getLastVisit();
-  const closingLastVisit = isExitScanClosingLastVisit(lastVisit, scanCode);
+  const closingLastVisit = isExitScanClosingLastVisit(lastVisit, spaceId);
 
   // if the we have a last visit but the current exit QR is not closing it, we need to evaluate if we need to close the previous visit
   if (lastVisit && !closingLastVisit) {
@@ -112,7 +119,7 @@ const scanExit = async (scanCode, estimatedVisitDuration) => {
   }
 
   const value = {
-    spaceId: scanCode,
+    spaceId: spaceId,
     exitTimestamp,
     userGeneratedCode: closingLastVisit
       ? lastVisit.userGeneratedCode
@@ -145,9 +152,9 @@ const scanExit = async (scanCode, estimatedVisitDuration) => {
 };
 
 // Function called when a QR code is scanned.
-export const scan = async (scanCode, isExit, estimatedVisitDuration) => {
+export const scan = async (spaceId, isExit, estimatedVisitDuration) => {
   if (!isExit) {
-    return scanEntrance(scanCode, estimatedVisitDuration);
+    return scanEntrance(spaceId, estimatedVisitDuration);
   }
-  return scanExit(scanCode, estimatedVisitDuration);
+  return scanExit(spaceId, estimatedVisitDuration);
 };
