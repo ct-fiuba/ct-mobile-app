@@ -17,13 +17,16 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   high: {
-    backgroundColor: '#ff9999',
+    backgroundColor: '#FF8080',
   },
   medium: {
     backgroundColor: '#faee87',
   },
   low: {
-    backgroundColor: '#42ff6e',
+    backgroundColor: '#9CF196',
+  },
+  infected: {
+    backgroundColor: '#FFBA92',
   },
 });
 

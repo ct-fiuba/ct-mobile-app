@@ -2,13 +2,14 @@ import React, { useCallback, useState, useEffect } from 'react';
 import { View, Alert } from 'react-native';
 import { CT_BILLBOARD_INTERVAL } from 'react-native-dotenv';
 
-import { useDispatch } from '../../contexts/AuthContext';
+import { useDispatch, useSelector } from '../../contexts/AuthContext';
 import { actionCreators } from '../../contexts/AuthContext/reducer';
 
 import {
   removeSession,
   getCodes,
   getRisk,
+  getInfected,
 } from '../../services/LocalStorageService';
 import { updateRisk } from '../../services/BillboardService';
 import { sendCodes } from '../../services/CTUserAPIService';
@@ -25,13 +26,18 @@ function DashboardScreen({ navigation }) {
 
   const [risk, setRisk] = useState(0);
 
+  const isInfected = useSelector(state => state.infected);
+
   useEffect(() => {
-    async function fetchRisk() {
+    async function fetchData() {
       const savedRisk = parseInt(await getRisk(), 10) || 0;
       setRisk(savedRisk);
+
+      const infected = await getInfected();
+      dispatch(actionCreators.setInfected(infected));
     }
-    fetchRisk();
-  }, []);
+    fetchData();
+  }, [dispatch]);
 
   const openAlert = (title, message) => {
     Alert.alert(
@@ -78,10 +84,15 @@ function DashboardScreen({ navigation }) {
     const codes = await getCodes();
     sendCodes(codes)
       .then(_res => {
+        dispatch(actionCreators.setInfected(true));
         openAlert('Exito', 'Los codigos se compartieron exitosamente');
       })
       .catch(error => openAlert('Error', error.response.data.reason));
-  }, []);
+  }, [dispatch]);
+
+  const notInfectedAnymore = useCallback(() => {
+    dispatch(actionCreators.setInfected(false));
+  }, [dispatch]);
 
   const signOut = useCallback(async () => {
     await removeSession();
@@ -104,16 +115,27 @@ function DashboardScreen({ navigation }) {
         <UserInfo />
         <View style={[styles.center, styles.actionables]}>
           {[
-            {
-              onPress: () =>
-                askQuestion(
-                  'Compartir códigos',
-                  '¿Está seguro que desea compartir sus códigos?',
-                  exposeCodes
-                ),
-              title: 'Me contagie',
-              icon: 'share',
-            },
+            isInfected
+              ? {
+                  onPress: () =>
+                    askQuestion(
+                      'Alta medica',
+                      'Confirmar el alta médica de la enfermedad.',
+                      notInfectedAnymore
+                    ),
+                  title: 'Alta médica',
+                  icon: 'check',
+                }
+              : {
+                  onPress: () =>
+                    askQuestion(
+                      'Compartir códigos',
+                      '¿Está seguro que desea compartir sus códigos?',
+                      exposeCodes
+                    ),
+                  title: 'Me contagie',
+                  icon: 'share',
+                },
             {
               onPress: goToScan,
               title: 'Escanear',
