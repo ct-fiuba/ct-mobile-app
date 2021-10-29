@@ -88,11 +88,11 @@ function DashboardScreen({ navigation }) {
       .then(_res => {
         dispatch(actionCreators.setInfected(true));
         openAlert('Exito', 'Los codigos se compartieron exitosamente');
-        setLoading(true);
+        setLoading(false);
       })
       .catch(error => {
         openAlert('Error', error.response.data.reason);
-        setLoading(true);
+        setLoading(false);
       });
   }, [dispatch]);
 
@@ -130,7 +130,7 @@ function DashboardScreen({ navigation }) {
                       notInfectedAnymore
                     ),
                   title: 'Alta médica',
-                  icon: 'check',
+                  icon: 'healthy',
                 }
               : {
                   onPress: () =>
@@ -140,24 +140,24 @@ function DashboardScreen({ navigation }) {
                       exposeCodes
                     ),
                   title: 'Me contagie',
-                  icon: 'share',
-                  loading,
+                  icon: 'pandemic',
+                  isLoading: loading,
                 },
             {
               onPress: goToScan,
               title: 'Escanear',
-              icon: 'camera',
+              icon: 'scan',
               main: true,
             },
             { onPress: signOut, title: 'Cerrar Sesión', icon: 'logout' },
-          ].map(({ onPress, title, icon, main, loading }) => (
+          ].map(({ onPress, title, icon, main, isLoading }) => (
             <ActionableCard
               key={icon}
               onPress={onPress}
               title={title}
               icon={icon}
               main={main}
-              loading={loading}
+              loading={isLoading}
             />
           ))}
         </View>
