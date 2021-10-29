@@ -24,6 +24,10 @@ const styles = StyleSheet.create({
   mainTitle: {
     color: 'white',
   },
+  loader: {
+    marginTop: 10,
+    padding: 25,
+  },
 });
 
 export default styles;

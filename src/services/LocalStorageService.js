@@ -11,8 +11,11 @@ export const getSessionActive = () => AsyncStorage.getItem('session');
 
 export const getAccessToken = async () => {
   const session = await getSessionActive();
-  const { accessToken } = JSON.parse(session);
-  return accessToken;
+  if (session) {
+    const { accessToken } = JSON.parse(session);
+    return accessToken;
+  }
+  return null;
 };
 
 export const saveUserInfo = info => {

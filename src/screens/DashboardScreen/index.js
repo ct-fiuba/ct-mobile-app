@@ -25,6 +25,7 @@ function DashboardScreen({ navigation }) {
   const dispatch = useDispatch();
 
   const [risk, setRisk] = useState(0);
+  const [loading, setLoading] = useState(false);
 
   const isInfected = useSelector(state => state.infected);
 
@@ -81,13 +82,18 @@ function DashboardScreen({ navigation }) {
   }, parseInt(CT_BILLBOARD_INTERVAL));
 
   const exposeCodes = useCallback(async () => {
+    setLoading(true);
     const codes = await getCodes();
     sendCodes(codes)
       .then(_res => {
         dispatch(actionCreators.setInfected(true));
         openAlert('Exito', 'Los codigos se compartieron exitosamente');
+        setLoading(true);
       })
-      .catch(error => openAlert('Error', error.response.data.reason));
+      .catch(error => {
+        openAlert('Error', error.response.data.reason);
+        setLoading(true);
+      });
   }, [dispatch]);
 
   const notInfectedAnymore = useCallback(() => {
@@ -135,6 +141,7 @@ function DashboardScreen({ navigation }) {
                     ),
                   title: 'Me contagie',
                   icon: 'share',
+                  loading,
                 },
             {
               onPress: goToScan,
@@ -143,13 +150,14 @@ function DashboardScreen({ navigation }) {
               main: true,
             },
             { onPress: signOut, title: 'Cerrar Sesión', icon: 'logout' },
-          ].map(({ onPress, title, icon, main }) => (
+          ].map(({ onPress, title, icon, main, loading }) => (
             <ActionableCard
               key={icon}
               onPress={onPress}
               title={title}
               icon={icon}
               main={main}
+              loading={loading}
             />
           ))}
         </View>

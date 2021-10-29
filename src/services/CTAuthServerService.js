@@ -25,6 +25,7 @@ export const refreshAccessToken = refreshToken =>
 
 export const withGenuxToken = async request => {
   const accessToken = await getAccessToken();
+  if (!accessToken) return Promise.reject(new Error('Session expirada'));
   return authApi
     .post('/generateGenuxToken', { accessToken })
     .then(response => {
@@ -34,21 +35,31 @@ export const withGenuxToken = async request => {
     .catch(error => error.response);
 };
 
+export const refreshSession = async callback => {
+  const session = await getSessionActive();
+  if (!session) {
+    openAlert('Sesión expirada');
+    return Promise.reject(new Error('Sesión expirada'));
+  }
+  const parsedSession = JSON.parse(session);
+  return refreshAccessToken(parsedSession.refreshToken)
+    .then(refreshResponse => {
+      saveSession({ ...parsedSession, ...refreshResponse.data });
+      return callback(refreshResponse.data);
+    })
+    .catch(async error => {
+      await removeSession();
+      openAlert('Sesión expirada');
+      return Promise.reject(new Error('Sesión expirada'));
+    });
+};
+
 authApi.interceptors.response.use(null, async error => {
   if (error.config && error.response && error.response.status === 401) {
-    const session = await getSessionActive();
-    const parsedSession = JSON.parse(session);
-    return refreshAccessToken(parsedSession.refreshToken)
-      .then(refreshResponse => {
-        saveSession({ ...parsedSession, ...refreshResponse.data });
-        error.config.data.accessToken = refreshResponse.data.accessToken;
-        return authApi.request(error.config);
-      })
-      .catch(async error => {
-        await removeSession();
-        openAlert('Sesión expirada');
-        return Promise.reject(new Error('Sesión expirada'));
-      });
+    return refreshSession(data => {
+      error.config.data.accessToken = data.accessToken;
+      return authApi.request(error.config);
+    });
   }
 
   return Promise.reject(error);
