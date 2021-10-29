@@ -26,7 +26,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#9CF196',
   },
   infected: {
-    backgroundColor: '#FFBA92',
+    backgroundColor: '#C8C2BC',
   },
 });
 
