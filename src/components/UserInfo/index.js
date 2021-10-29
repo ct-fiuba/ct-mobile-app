@@ -1,11 +1,14 @@
 /* eslint-disable react/style-prop-object */
 import React, { useState, useCallback, useEffect } from 'react';
-import { View, Switch } from 'react-native';
-import { Button, Select, Text, Icon } from 'react-native-magnus';
+import { View, Switch, Image } from 'react-native';
+import { Button, Select, Text } from 'react-native-magnus';
 
 import ModalDatePicker from '../ModalDatePicker';
 import { formatDate } from '../../utils/dateFormat';
 import { getUserInfo, saveUserInfo } from '../../services/LocalStorageService';
+
+import pencil from '../../../assets/pencil.png';
+import save from '../../../assets/save.png';
 
 import styles from './styles';
 
@@ -89,10 +92,9 @@ function UserInfo() {
           }}
         >
           <Text mr={5}>{editable ? 'Guardar' : 'Editar'}</Text>
-          <Icon
-            color="black"
-            name={editable ? 'save' : 'edit'}
-            fontSize="3xl"
+          <Image
+            source={editable ? save : pencil}
+            style={{ width: 30, height: 30 }}
           />
         </Button>
       </View>
@@ -102,13 +104,17 @@ function UserInfo() {
           <Text fontWeight="bold" fontSize={15}>
             ¿Está Vacunado?
           </Text>
-          <Switch
-            trackColor={{ false: '#767577', true: '#81b0ff' }}
-            style={styles.toggle}
-            onValueChange={setVaccinated}
-            value={vaccinated}
-            disabled={!editable}
-          />
+          {editable ? (
+            <Switch
+              trackColor={{ false: '#767577', true: '#81b0ff' }}
+              style={styles.toggle}
+              onValueChange={setVaccinated}
+              value={vaccinated}
+              disabled={!editable}
+            />
+          ) : (
+            <Text>{vaccinated ? 'Si' : 'No'}</Text>
+          )}
         </View>
         {vaccinated && (
           <View>
@@ -116,23 +122,31 @@ function UserInfo() {
               style={{ flexDirection: 'row', justifyContent: 'space-between' }}
             >
               <View>
-                <View style={styles.wrap}>
-                  <Text style={{ marginRight: 5 }}>Vacuna:</Text>
-                  <Button
-                    mb={10}
-                    borderWidth={1}
-                    bg="white"
-                    color="gray900"
-                    borderColor="gray300"
-                    onPress={() => {
-                      if (vaccineRef.current) {
-                        vaccineRef.current.open();
-                      }
-                    }}
-                    disabled={!editable}
-                  >
-                    {vaccine ? vaccine.name : '-'}
-                  </Button>
+                <View style={[styles.wrap, !editable && styles.nonEditable]}>
+                  <Text style={{ marginRight: 5, marginVertical: 2 }}>
+                    Vacuna:
+                  </Text>
+                  {editable ? (
+                    <Button
+                      mb={10}
+                      borderWidth={1}
+                      bg="white"
+                      color="gray900"
+                      borderColor="gray300"
+                      onPress={() => {
+                        if (vaccineRef.current) {
+                          vaccineRef.current.open();
+                        }
+                      }}
+                      disabled={!editable}
+                    >
+                      {vaccine ? vaccine.name : '-'}
+                    </Button>
+                  ) : (
+                    <Text styles={{ padding: 30 }}>
+                      {vaccine ? vaccine.name : '-'}
+                    </Text>
+                  )}
                 </View>
 
                 <Select
@@ -150,23 +164,29 @@ function UserInfo() {
                 />
               </View>
               <View>
-                <View style={styles.wrap}>
-                  <Text style={{ marginRight: 5 }}>Dosis:</Text>
-                  <Button
-                    mb={10}
-                    borderWidth={1}
-                    bg="white"
-                    color="gray900"
-                    borderColor="gray300"
-                    onPress={() => {
-                      if (doseRef.current) {
-                        doseRef.current.open();
-                      }
-                    }}
-                    disabled={!editable}
-                  >
-                    {dose ? dose.toString() : '-'}
-                  </Button>
+                <View style={[styles.wrap, !editable && styles.nonEditable]}>
+                  <Text style={{ marginRight: 5, marginVertical: 2 }}>
+                    Dosis:
+                  </Text>
+                  {editable ? (
+                    <Button
+                      mb={10}
+                      borderWidth={1}
+                      bg="white"
+                      color="gray900"
+                      borderColor="gray300"
+                      onPress={() => {
+                        if (doseRef.current) {
+                          doseRef.current.open();
+                        }
+                      }}
+                      disabled={!editable}
+                    >
+                      {dose ? dose.toString() : '-'}
+                    </Button>
+                  ) : (
+                    <Text> {dose ? dose.toString() : '-'}</Text>
+                  )}
                 </View>
 
                 <Select
@@ -185,20 +205,26 @@ function UserInfo() {
               </View>
             </View>
             <View>
-              <View style={styles.wrap}>
-                <Text>{'Fecha de\núltima dosis:'}</Text>
-                <Button
-                  borderWidth={1}
-                  bg="white"
-                  color="gray900"
-                  borderColor="gray300"
-                  onPress={() => {
-                    setVisibleDoseDate(true);
-                  }}
-                  disabled={!editable}
-                >
-                  {lastDoseDate || '-'}
-                </Button>
+              <View style={[styles.wrap, !editable && styles.nonEditable]}>
+                <Text styles={{ marginVertical: 5 }}>
+                  {'Fecha de\núltima dosis:'}
+                </Text>
+                {editable ? (
+                  <Button
+                    borderWidth={1}
+                    bg="white"
+                    color="gray900"
+                    borderColor="gray300"
+                    onPress={() => {
+                      setVisibleDoseDate(true);
+                    }}
+                    disabled={!editable}
+                  >
+                    {lastDoseDate || '-'}
+                  </Button>
+                ) : (
+                  <Text>{lastDoseDate || '-'}</Text>
+                )}
               </View>
 
               <ModalDatePicker
@@ -213,34 +239,42 @@ function UserInfo() {
             </View>
           </View>
         )}
-        <View style={styles.wrap}>
+        <View style={[styles.wrap, !editable && styles.nonEditable]}>
           <Text fontWeight="bold" fontSize={15}>
             ¿Ha estado infectado?
           </Text>
-          <Switch
-            trackColor={{ false: '#767577', true: '#81b0ff' }}
-            style={styles.toggle}
-            onValueChange={setBeenInfected}
-            value={beenInfected}
-            disabled={!editable}
-          />
+          {editable ? (
+            <Switch
+              trackColor={{ false: '#767577', true: '#81b0ff' }}
+              style={styles.toggle}
+              onValueChange={setBeenInfected}
+              value={beenInfected}
+              disabled={!editable}
+            />
+          ) : (
+            <Text>{beenInfected ? 'Si' : 'No'}</Text>
+          )}
         </View>
         {beenInfected && (
           <View>
-            <View style={styles.wrap}>
+            <View style={[styles.wrap, !editable && styles.nonEditable]}>
               <Text>Fecha de alta:</Text>
-              <Button
-                borderWidth={1}
-                bg="white"
-                color="gray900"
-                borderColor="gray300"
-                onPress={() => {
-                  setVisibleDate(true);
-                }}
-                disabled={!editable}
-              >
-                {medicalDischargeDate || '-'}
-              </Button>
+              {editable ? (
+                <Button
+                  borderWidth={1}
+                  bg="white"
+                  color="gray900"
+                  borderColor="gray300"
+                  onPress={() => {
+                    setVisibleDate(true);
+                  }}
+                  disabled={!editable}
+                >
+                  {medicalDischargeDate || '-'}
+                </Button>
+              ) : (
+                <Text>{medicalDischargeDate || '-'}</Text>
+              )}
             </View>
 
             <ModalDatePicker
