@@ -6,10 +6,9 @@ import { Button, Select, Text, Icon } from 'react-native-magnus';
 import ModalDatePicker from '../ModalDatePicker';
 import { formatDate } from '../../utils/dateFormat';
 import { getUserInfo, saveUserInfo } from '../../services/LocalStorageService';
+import { getVaccines } from '../../services/CTUserAPIService';
 
 import styles from './styles';
-
-import { VACCINES } from './constants';
 
 function UserInfo() {
   const [editable, setEditable] = useState(false);
@@ -23,6 +22,7 @@ function UserInfo() {
   const [visibleDate, setVisibleDate] = useState(false);
   const [visibleDoseDate, setVisibleDoseDate] = useState(false);
   const [lastDoseDate, setLastDoseDate] = useState('');
+  const [vaccineOptions, setVaccineOptions] = useState([]);
 
   useEffect(() => {
     async function fetchData() {
@@ -37,6 +37,13 @@ function UserInfo() {
         setLastDoseDate(userInfo.lastDoseDate);
       }
     }
+    async function fetchVaccines() {
+      const vaccines = await getVaccines();
+      if (vaccines) {
+        setVaccineOptions(vaccines);
+      }
+    }
+    fetchVaccines();
     fetchData();
   }, []);
 
@@ -141,7 +148,7 @@ function UserInfo() {
                   value={vaccine && vaccine.name}
                   title="Elija la vacuna"
                   roundedTop="xl"
-                  data={VACCINES}
+                  data={vaccineOptions.filter(item => !dose || item.shotsCount >= dose)}
                   renderItem={item => (
                     <Select.Option value={item} py="md" px="xl">
                       <Text>{item.name}</Text>
@@ -175,10 +182,12 @@ function UserInfo() {
                   value={vaccine && vaccine.name}
                   title="¿Cuantas dosis se dió?"
                   roundedTop="xl"
-                  data={[1, 2]}
+                  data={
+                    Array.from(Array(Math.max(...(vaccineOptions.filter(item => item.name === vaccine.name).map(item => item.shotsCount)))).keys())
+                  }
                   renderItem={item => (
-                    <Select.Option value={item} py="md" px="xl">
-                      <Text>{item}</Text>
+                    <Select.Option value={item + 1} py="md" px="xl">
+                      <Text>{item + 1}</Text>
                     </Select.Option>
                   )}
                 />
