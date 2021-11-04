@@ -1,14 +1,9 @@
 import { CT_USER_API_URI } from 'react-native-dotenv';
 import axios from 'axios';
-import { openAlert } from '../utils/alert';
 
-import {
-  getSessionActive,
-  saveSession,
-  SCAN_WINDOW,
-  removeSession,
-} from './LocalStorageService';
-import { refreshAccessToken, withGenuxToken } from './CTAuthServerService';
+import { refreshSession, withGenuxToken } from './CTAuthServerService';
+
+import { SCAN_WINDOW } from './LocalStorageService';
 
 const userApi = axios.create({
   baseURL: CT_USER_API_URI,
@@ -16,19 +11,10 @@ const userApi = axios.create({
 
 userApi.interceptors.response.use(null, async error => {
   if (error.config && error.response && error.response.status === 401) {
-    const session = await getSessionActive();
-    const parsedSession = JSON.parse(session);
-    return refreshAccessToken(parsedSession.refreshToken)
-      .then(refreshResponse => {
-        saveSession({ ...parsedSession, ...refreshResponse.data });
-        error.config.headers['access-token'] = refreshResponse.data.accessToken;
-        return userApi.request(error.config);
-      })
-      .catch(async error => {
-        await removeSession();
-        openAlert('Sesión expirada');
-        return Promise.reject(new Error('Sesión expirada'));
-      });
+    return refreshSession(data => {
+      error.config.headers['access-token'] = data.accessToken;
+      return userApi.request(error.config);
+    });
   }
 
   return Promise.reject(error);

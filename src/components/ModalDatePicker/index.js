@@ -76,6 +76,7 @@ function ModalDatePicker({
               mode="date"
               display="spinner"
               onChange={onChange}
+              textColor="#000"
             />
           </View>
         </Modal>

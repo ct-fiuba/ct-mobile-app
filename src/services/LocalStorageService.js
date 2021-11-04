@@ -1,4 +1,4 @@
-import { AsyncStorage } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export const SCAN_WINDOW = 14;
 
@@ -11,8 +11,11 @@ export const getSessionActive = () => AsyncStorage.getItem('session');
 
 export const getAccessToken = async () => {
   const session = await getSessionActive();
-  const { accessToken } = JSON.parse(session);
-  return accessToken;
+  if (session) {
+    const { accessToken } = JSON.parse(session);
+    return accessToken;
+  }
+  return null;
 };
 
 export const saveUserInfo = info => {
@@ -62,4 +65,13 @@ export const getLastVisit = async () => {
 
 export const clearLastVisitInfo = async () => {
   await AsyncStorage.setItem('ct-last-visit', '');
+};
+
+export const setInfected = infected => {
+  AsyncStorage.setItem('ct-infected', `${infected}`);
+};
+
+export const getInfected = async () => {
+  const infected = await AsyncStorage.getItem('ct-infected');
+  return infected === 'true';
 };
