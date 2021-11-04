@@ -92,7 +92,7 @@ function UserInfo() {
       setVaccine('');
       setDose(1);
       setLastDoseDate('');
-      setSelectableVaccines(vaccineOptions);
+      setSelectableVaccines(getSelectableVaccineNames(0));
       setSelectableDoses([0]);
     }
   }, []);
