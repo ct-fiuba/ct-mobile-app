@@ -86,16 +86,15 @@ function UserInfo() {
     setLastDoseDate('');
   }, []);
 
-  const onVaccinatedChange = useCallback(new_vaccinated => {
+  const onVaccinatedChange = new_vaccinated => {
     setVaccinated(new_vaccinated);
     if (!new_vaccinated) {
-      setVaccine('');
-      setDose(1);
+      setVaccine(null);
       setLastDoseDate('');
-      setSelectableVaccines(getSelectableVaccineNames(0));
       setSelectableDoses([0]);
+      onDosesChange(1);
     }
-  }, []);
+  }
 
   const onBeenInfectedChange = useCallback(new_been_infected => {
     setBeenInfected(new_been_infected);
