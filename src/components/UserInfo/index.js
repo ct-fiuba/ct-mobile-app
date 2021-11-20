@@ -6,13 +6,12 @@ import { Button, Select, Text } from 'react-native-magnus';
 import ModalDatePicker from '../ModalDatePicker';
 import { formatDate } from '../../utils/dateFormat';
 import { getUserInfo, saveUserInfo } from '../../services/LocalStorageService';
+import { getVaccines } from '../../services/CTUserAPIService';
 
 import pencil from '../../../assets/pencil.png';
 import save from '../../../assets/save.png';
 
 import styles from './styles';
-
-import { VACCINES } from './constants';
 
 function UserInfo() {
   const [editable, setEditable] = useState(false);
@@ -26,6 +25,9 @@ function UserInfo() {
   const [visibleDate, setVisibleDate] = useState(false);
   const [visibleDoseDate, setVisibleDoseDate] = useState(false);
   const [lastDoseDate, setLastDoseDate] = useState('');
+  const [vaccineOptions, setVaccineOptions] = useState([]);
+  const [selectableVaccines, setSelectableVaccines] = useState([]);
+  const [selectableDoses, setSelectableDoses] = useState([]);
 
   useEffect(() => {
     async function fetchData() {
@@ -40,6 +42,15 @@ function UserInfo() {
         setLastDoseDate(userInfo.lastDoseDate);
       }
     }
+    async function fetchVaccines() {
+      const vaccines = await getVaccines();
+      if (vaccines) {
+        setVaccineOptions(vaccines);
+        setSelectableVaccines(vaccines);
+        setSelectableDoses([0]);
+      }
+    }
+    fetchVaccines();
     fetchData();
   }, []);
 
@@ -75,6 +86,42 @@ function UserInfo() {
     setLastDoseDate('');
   }, []);
 
+  const onVaccinatedChange = new_vaccinated => {
+    setVaccinated(new_vaccinated);
+    if (!new_vaccinated) {
+      setVaccine(null);
+      setLastDoseDate('');
+      setSelectableDoses([0]);
+      onDosesChange(1);
+    }
+  }
+
+  const onBeenInfectedChange = useCallback(new_been_infected => {
+    setBeenInfected(new_been_infected);
+    if (!new_been_infected) {
+      setMedicalDischargeDate('');
+    }
+  }, []);
+
+  const getSelectableDoses = (currentVaccine) => {
+    return Array.from(Array(currentVaccine.shotsCount).keys());
+  }
+
+  const getSelectableVaccineNames = (currentDose) => {
+    return vaccineOptions.filter(item => !currentDose || item.shotsCount >= currentDose);
+  }
+
+  const onVaccineChange = (currentVaccine) => {
+    setSelectableDoses(getSelectableDoses(currentVaccine));
+    setVaccine(currentVaccine)
+  }
+
+  const onDosesChange = (currentDose) => {
+    setSelectableVaccines(getSelectableVaccineNames(currentDose));
+    setDose(currentDose);
+  }
+
+
   return (
     <View style={styles.user}>
       <View style={styles.wrap}>
@@ -108,7 +155,7 @@ function UserInfo() {
             <Switch
               trackColor={{ false: '#767577', true: '#81b0ff' }}
               style={styles.toggle}
-              onValueChange={setVaccinated}
+              onValueChange={onVaccinatedChange}
               value={vaccinated}
               disabled={!editable}
             />
@@ -150,12 +197,12 @@ function UserInfo() {
                 </View>
 
                 <Select
-                  onSelect={setVaccine}
+                  onSelect={onVaccineChange}
                   ref={vaccineRef}
                   value={vaccine && vaccine.name}
                   title="Elija la vacuna"
                   roundedTop="xl"
-                  data={VACCINES}
+                  data={selectableVaccines}
                   renderItem={item => (
                     <Select.Option value={item} py="md" px="xl">
                       <Text>{item.name}</Text>
@@ -190,15 +237,15 @@ function UserInfo() {
                 </View>
 
                 <Select
-                  onSelect={setDose}
+                  onSelect={onDosesChange}
                   ref={doseRef}
                   value={vaccine && vaccine.name}
                   title="¿Cuantas dosis se dió?"
                   roundedTop="xl"
-                  data={[1, 2]}
+                  data={selectableDoses}
                   renderItem={item => (
-                    <Select.Option value={item} py="md" px="xl">
-                      <Text>{item}</Text>
+                    <Select.Option value={item + 1} py="md" px="xl">
+                      <Text>{item + 1}</Text>
                     </Select.Option>
                   )}
                 />
@@ -247,7 +294,7 @@ function UserInfo() {
             <Switch
               trackColor={{ false: '#767577', true: '#81b0ff' }}
               style={styles.toggle}
-              onValueChange={setBeenInfected}
+              onValueChange={onBeenInfectedChange}
               value={beenInfected}
               disabled={!editable}
             />
