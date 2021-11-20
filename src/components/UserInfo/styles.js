@@ -37,6 +37,9 @@ const styles = StyleSheet.create({
     margin: 10,
     marginRight: 0,
   },
+  nonEditable: {
+    marginVertical: 10,
+  },
 });
 
 export default styles;
