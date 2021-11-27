@@ -1,7 +1,7 @@
 /* eslint-disable react/style-prop-object */
 import React, { useState, useCallback, useEffect } from 'react';
 import { View, Switch, Image } from 'react-native';
-import { Button, Select, Text } from 'react-native-magnus';
+import { Button, Icon, Select, Text, Tooltip } from 'react-native-magnus';
 
 import ModalDatePicker from '../ModalDatePicker';
 import { formatDate } from '../../utils/dateFormat';
@@ -28,6 +28,8 @@ function UserInfo() {
   const [vaccineOptions, setVaccineOptions] = useState([]);
   const [selectableVaccines, setSelectableVaccines] = useState([]);
   const [selectableDoses, setSelectableDoses] = useState([]);
+  const lastDoseTooltipRef = React.createRef();
+  const medicalDischargeTooltipRef = React.createRef();
 
   useEffect(() => {
     async function fetchData() {
@@ -253,9 +255,24 @@ function UserInfo() {
             </View>
             <View>
               <View style={[styles.wrap, !editable && styles.nonEditable]}>
-                <Text styles={{ marginVertical: 5 }}>
-                  {'Fecha de\núltima dosis:'}
-                </Text>
+                <Tooltip ref={lastDoseTooltipRef} text="La fecha de la última dosis es anonimizada al momento de cargar visitas">
+                  <Button
+                    h={40}
+                    w={155}
+                    bg='white'
+                    styles={styles.tooltipButtons}
+                    onPress={() => {
+                      if (lastDoseTooltipRef.current) {
+                        lastDoseTooltipRef.current.show();
+                      }
+                    }}
+                  >
+                    <Text>
+                      {'Fecha de última dosis: '}
+                    </Text>
+                    <Icon name='question' fontFamily='SimpleLineIcons' fontSize={14} color='black' h={15} w={15} />
+                  </Button>
+                </Tooltip>
                 {editable ? (
                   <Button
                     borderWidth={1}
@@ -305,7 +322,22 @@ function UserInfo() {
         {beenInfected && (
           <View>
             <View style={[styles.wrap, !editable && styles.nonEditable]}>
-              <Text>Fecha de alta:</Text>
+              <Tooltip ref={medicalDischargeTooltipRef} text="La fecha de alta es anonimizada al momento de cargar visitas">
+                <Button
+                  h={40}
+                  w={110}
+                  bg='white'
+                  styles={styles.tooltipButtons}
+                  onPress={() => {
+                    if (medicalDischargeTooltipRef.current) {
+                      medicalDischargeTooltipRef.current.show();
+                    }
+                  }}
+                >
+                <Text>Fecha de alta: </Text>
+                <Icon name='question' fontFamily='SimpleLineIcons' fontSize={14} color='black' h={15} w={15} />
+                </Button>
+              </Tooltip>
               {editable ? (
                 <Button
                   borderWidth={1}
