@@ -12,3 +12,9 @@ export const parseDate = date => {
 
 // Miliseconds to Minutes
 export const msToMinutes = ms => Math.floor(ms / 1000 / 60);
+
+export const anonymizeDate = date => {
+  // Moves the date to the previous Monday.
+  date.setDate(date.getDate() - (date.getDay() + 6) % 7);
+  return date;
+};
