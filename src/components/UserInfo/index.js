@@ -13,8 +13,7 @@ import save from '../../../assets/save.png';
 
 import styles from './styles';
 
-function UserInfo() {
-  const [editable, setEditable] = useState(false);
+function UserInfo({ editable, setEditable, disableTooltip, disableText }) {
   const [vaccinated, setVaccinated] = useState(false);
   const [vaccine, setVaccine] = useState(null);
   const [dose, setDose] = useState(1);
@@ -88,41 +87,40 @@ function UserInfo() {
     setLastDoseDate('');
   }, []);
 
-  const onVaccinatedChange = new_vaccinated => {
-    setVaccinated(new_vaccinated);
-    if (!new_vaccinated) {
+  const getSelectableDoses = currentVaccine =>
+    Array.from(Array(currentVaccine.shotsCount).keys());
+
+  const getSelectableVaccineNames = currentDose =>
+    vaccineOptions.filter(
+      item => !currentDose || item.shotsCount >= currentDose
+    );
+
+  const onDosesChange = currentDose => {
+    setSelectableVaccines(getSelectableVaccineNames(currentDose));
+    setDose(currentDose);
+  };
+
+  const onVaccinatedChange = newVaccinated => {
+    setVaccinated(newVaccinated);
+    if (!newVaccinated) {
       setVaccine(null);
       setLastDoseDate('');
       setSelectableDoses([0]);
       onDosesChange(1);
     }
-  }
+  };
 
-  const onBeenInfectedChange = useCallback(new_been_infected => {
-    setBeenInfected(new_been_infected);
-    if (!new_been_infected) {
+  const onBeenInfectedChange = useCallback(newBeenInfected => {
+    setBeenInfected(newBeenInfected);
+    if (!newBeenInfected) {
       setMedicalDischargeDate('');
     }
   }, []);
 
-  const getSelectableDoses = (currentVaccine) => {
-    return Array.from(Array(currentVaccine.shotsCount).keys());
-  }
-
-  const getSelectableVaccineNames = (currentDose) => {
-    return vaccineOptions.filter(item => !currentDose || item.shotsCount >= currentDose);
-  }
-
-  const onVaccineChange = (currentVaccine) => {
+  const onVaccineChange = currentVaccine => {
     setSelectableDoses(getSelectableDoses(currentVaccine));
-    setVaccine(currentVaccine)
-  }
-
-  const onDosesChange = (currentDose) => {
-    setSelectableVaccines(getSelectableVaccineNames(currentDose));
-    setDose(currentDose);
-  }
-
+    setVaccine(currentVaccine);
+  };
 
   return (
     <View style={styles.user}>
@@ -130,22 +128,24 @@ function UserInfo() {
         <Text mb={10} fontWeight="bold" fontSize="2xl">
           Mis datos
         </Text>
-        <Button
-          bg="transparent"
-          rounded="circle"
-          onPress={async () => {
-            if (editable) {
-              await onSave();
-            }
-            setEditable(!editable);
-          }}
-        >
-          <Text mr={5}>{editable ? 'Guardar' : 'Editar'}</Text>
-          <Image
-            source={editable ? save : pencil}
-            style={{ width: 30, height: 30 }}
-          />
-        </Button>
+        <Tooltip ref={disableTooltip} text={disableText}>
+          <Button
+            bg="transparent"
+            rounded="circle"
+            onPress={async () => {
+              if (editable) {
+                await onSave();
+              }
+              setEditable(!editable);
+            }}
+          >
+            <Text mr={5}>{editable ? 'Guardar' : 'Editar'}</Text>
+            <Image
+              source={editable ? save : pencil}
+              style={{ width: 30, height: 30 }}
+            />
+          </Button>
+        </Tooltip>
       </View>
 
       <View style={styles.form}>
@@ -172,7 +172,13 @@ function UserInfo() {
             >
               <View>
                 <View style={[styles.wrap, !editable && styles.nonEditable]}>
-                  <Text style={{ marginRight: 5, marginVertical: 2 }}>
+                  <Text
+                    style={{
+                      paddingLeft: 5,
+                      marginRight: 5,
+                      marginVertical: 2,
+                    }}
+                  >
                     Vacuna:
                   </Text>
                   {editable ? (
@@ -255,11 +261,13 @@ function UserInfo() {
             </View>
             <View>
               <View style={[styles.wrap, !editable && styles.nonEditable]}>
-                <Tooltip ref={lastDoseTooltipRef} text="La fecha de la última dosis es anonimizada al momento de cargar visitas">
+                <Tooltip
+                  ref={lastDoseTooltipRef}
+                  text="La fecha de la última dosis es anonimizada al momento de cargar visitas"
+                >
                   <Button
-                    h={40}
-                    w={155}
-                    bg='white'
+                    p={5}
+                    bg="white"
                     styles={styles.tooltipButtons}
                     onPress={() => {
                       if (lastDoseTooltipRef.current) {
@@ -267,10 +275,15 @@ function UserInfo() {
                       }
                     }}
                   >
-                    <Text>
-                      {'Fecha de última dosis: '}
-                    </Text>
-                    <Icon name='question' fontFamily='SimpleLineIcons' fontSize={14} color='black' h={15} w={15} />
+                    <Text>{'Fecha de última dosis: '}</Text>
+                    <Icon
+                      name="question"
+                      fontFamily="SimpleLineIcons"
+                      fontSize={14}
+                      color="black"
+                      h={15}
+                      w={15}
+                    />
                   </Button>
                 </Tooltip>
                 {editable ? (
@@ -322,11 +335,13 @@ function UserInfo() {
         {beenInfected && (
           <View>
             <View style={[styles.wrap, !editable && styles.nonEditable]}>
-              <Tooltip ref={medicalDischargeTooltipRef} text="La fecha de alta es anonimizada al momento de cargar visitas">
+              <Tooltip
+                ref={medicalDischargeTooltipRef}
+                text="La fecha de alta es anonimizada al momento de cargar visitas"
+              >
                 <Button
-                  h={40}
-                  w={110}
-                  bg='white'
+                  p={5}
+                  bg="white"
                   styles={styles.tooltipButtons}
                   onPress={() => {
                     if (medicalDischargeTooltipRef.current) {
@@ -334,8 +349,15 @@ function UserInfo() {
                     }
                   }}
                 >
-                <Text>Fecha de alta: </Text>
-                <Icon name='question' fontFamily='SimpleLineIcons' fontSize={14} color='black' h={15} w={15} />
+                  <Text>Fecha de alta: </Text>
+                  <Icon
+                    name="question"
+                    fontFamily="SimpleLineIcons"
+                    fontSize={14}
+                    color="black"
+                    h={15}
+                    w={15}
+                  />
                 </Button>
               </Tooltip>
               {editable ? (

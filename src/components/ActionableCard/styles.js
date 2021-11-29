@@ -16,6 +16,9 @@ const styles = StyleSheet.create({
   mainContainer: {
     backgroundColor: COLORS.secondary,
   },
+  disabled: {
+    backgroundColor: '#ababa4',
+  },
   title: {
     fontWeight: '600',
     fontSize: 12,

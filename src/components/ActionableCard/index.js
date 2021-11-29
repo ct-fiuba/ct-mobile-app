@@ -1,5 +1,6 @@
 import React from 'react';
 import { ActivityIndicator, Text, TouchableOpacity, Image } from 'react-native';
+import { Tooltip } from 'react-native-magnus';
 
 import styles from './styles';
 
@@ -21,14 +22,19 @@ export default function ActionableCard({
   icon,
   main,
   loading,
+  disabled,
 }) {
+  const ifDisabledStyle = disabled ? styles.disabled : styles.mainContainer;
   return (
     <TouchableOpacity
       onPress={onPress}
-      style={[styles.common, main ? styles.mainContainer : null]}
+      style={[styles.common, main ? ifDisabledStyle : null]}
     >
       {!loading && (
-        <Image source={ICONS[icon]} style={{ width: 30, height: 30 }} />
+        <Image
+          source={ICONS[icon]}
+          style={{ width: 30, height: 30, opacity: disabled ? 0.5 : 1 }}
+        />
       )}
 
       <Text style={[styles.title, main ? styles.mainTitle : null]}>
