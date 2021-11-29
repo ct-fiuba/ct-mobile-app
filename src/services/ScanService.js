@@ -9,7 +9,7 @@ import {
 } from './LocalStorageService';
 import { saveVisit, addExitTimestamp } from './CTUserAPIService';
 
-import { msToMinutes, parseDate } from '../utils/dateFormat';
+import { msToMinutes, parseDate, anonymizeDate } from '../utils/dateFormat';
 
 const EXIT_SCAN_VISIT_DURATION_WINDOW_MULTIPLIER = 3;
 const NEW_SCAN_CLOSING_LAST_VISIT_WINDOW_MULTIPLIER = 2;
@@ -77,11 +77,11 @@ const scanEntrance = async (spaceId, estimatedVisitDuration) => {
       vaccinated: userInfo.vaccinated ? userInfo.dose : 0,
       ...(userInfo.vaccinated && {
         vaccineReceived: userInfo.vaccine.name, // TODO: Maybe is better to send the id
-        vaccinatedDate: parseDate(userInfo.lastDoseDate),
+        vaccinatedDate: anonymizeDate(parseDate(userInfo.lastDoseDate)),
       }),
       illnessRecovered: userInfo.beenInfected,
       ...(userInfo.beenInfected && {
-        illnessRecoveredDate: parseDate(userInfo.medicalDischargeDate),
+        illnessRecoveredDate: anonymizeDate(parseDate(userInfo.medicalDischargeDate)),
       }),
     }),
   };
@@ -120,11 +120,11 @@ const scanExit = async (spaceId, estimatedVisitDuration) => {
       vaccinated: userInfo.vaccinated ? userInfo.dose : 0,
       ...(userInfo.vaccinated && {
         vaccineReceived: userInfo.vaccine.name, // TODO: Maybe is better to send the id
-        vaccinatedDate: parseDate(userInfo.lastDoseDate),
+        vaccinatedDate: anonymizeDate(parseDate(userInfo.lastDoseDate)),
       }),
       illnessRecovered: userInfo.beenInfected,
       ...(userInfo.beenInfected && {
-        illnessRecoveredDate: parseDate(userInfo.medicalDischargeDate),
+        illnessRecoveredDate: anonymizeDate(parseDate(userInfo.medicalDischargeDate)),
       }),
     }),
   };
