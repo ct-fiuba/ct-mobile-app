@@ -23,7 +23,7 @@ const styles = StyleSheet.create({
   },
   form: {
     borderRadius: 10,
-    padding: 25,
+    padding: 20,
     shadowOffset: { width: 1, height: 2 },
     shadowOpacity: 0.2,
     backgroundColor: '#fff',
@@ -39,6 +39,10 @@ const styles = StyleSheet.create({
   },
   nonEditable: {
     marginVertical: 10,
+  },
+  tooltipButtons: {
+    flexDirection: 'row',
+    alignItems: 'center',
   },
 });
 

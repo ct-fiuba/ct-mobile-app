@@ -25,9 +25,10 @@ export default function RiskStatus({ risk }) {
           ? `Nivel de riesgo: ${RISK_INFO[risk].title}`
           : 'Contagiado'}
       </Text>
-      <Text style={styles.small}>{sessionInfo.email}</Text>
+      <Text style={styles.small}>{sessionInfo && sessionInfo.email}</Text>
       <Text style={styles.small}>
-        {sessionInfo.dni &&
+        {sessionInfo &&
+          sessionInfo.dni &&
           new Intl.NumberFormat('de-DE').format(sessionInfo.dni)}
       </Text>
     </View>

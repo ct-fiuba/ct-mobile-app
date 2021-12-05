@@ -26,6 +26,9 @@ function DashboardScreen({ navigation }) {
 
   const [risk, setRisk] = useState(0);
   const [loading, setLoading] = useState(false);
+  const [editable, setEditable] = useState(false);
+
+  const disableTooltip = React.createRef();
 
   const isInfected = useSelector(state => state.infected);
 
@@ -106,8 +109,12 @@ function DashboardScreen({ navigation }) {
   }, [dispatch]);
 
   const goToScan = useCallback(async () => {
-    navigation.navigate('Escanear');
-  }, [navigation]);
+    if (editable) {
+      disableTooltip.current.show();
+    } else {
+      navigation.navigate('Escanear');
+    }
+  }, [disableTooltip, editable, navigation]);
   return (
     <View>
       <RiskStatus risk={risk} />
@@ -118,7 +125,12 @@ function DashboardScreen({ navigation }) {
           flexGrow: 1,
         }}
       >
-        <UserInfo />
+        <UserInfo
+          editable={editable}
+          setEditable={setEditable}
+          disableTooltip={disableTooltip}
+          disableText="Debe guardar sus datos antes de poder escanear"
+        />
         <View style={[styles.center, styles.actionables]}>
           {[
             isInfected
@@ -148,9 +160,10 @@ function DashboardScreen({ navigation }) {
               title: 'Escanear',
               icon: 'scan',
               main: true,
+              disabled: editable,
             },
             { onPress: signOut, title: 'Cerrar Sesión', icon: 'logout' },
-          ].map(({ onPress, title, icon, main, isLoading }) => (
+          ].map(({ onPress, title, icon, main, isLoading, disabled }) => (
             <ActionableCard
               key={icon}
               onPress={onPress}
@@ -158,6 +171,7 @@ function DashboardScreen({ navigation }) {
               icon={icon}
               main={main}
               loading={isLoading}
+              disabled={disabled}
             />
           ))}
         </View>
