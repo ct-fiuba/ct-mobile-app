@@ -29,7 +29,7 @@ function ResetPasswordScreen({ navigation }) {
         {
           text: 'Volver al Login',
           onPress: () => {
-            navigation.navigate('ResetPasswordScreen');
+            navigation.navigate('LoginScreen');
           },
         },
       ],
@@ -100,7 +100,7 @@ function ResetPasswordScreen({ navigation }) {
               <Text
                 style={styles.button}
                 onPress={() => {
-                  navigation.navigate('ResetPasswordScreen');
+                  navigation.navigate('LoginScreen');
                 }}
               >
                 Iniciar Sesión
