@@ -5,6 +5,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import DashboardScreen from './DashboardScreen';
 // import LoadingScreen from '../screens/LoadingScreen';
 import LoginScreen from './LoginScreen';
+import ResetPasswordScreen from './ResetPasswordScreen';
 import SignUpScreen from './SignUpScreen';
 import QRScanScreen from './QRScanScreen';
 import { getSessionActive } from '../services/LocalStorageService';
@@ -65,6 +66,10 @@ export default function Screens() {
           <>
             <Stack.Screen name="LoginScreen" component={LoginScreen} />
             <Stack.Screen name="SignUpScreen" component={SignUpScreen} />
+            <Stack.Screen
+              name="ResetPasswordScreen"
+              component={ResetPasswordScreen}
+            />
           </>
         )}
       </Stack.Navigator>
