@@ -103,7 +103,7 @@ function ResetPasswordScreen({ navigation }) {
                   navigation.navigate('LoginScreen');
                 }}
               >
-                Iniciar Sesión
+                Volver al Login
               </Text>
             </View>
           </View>
