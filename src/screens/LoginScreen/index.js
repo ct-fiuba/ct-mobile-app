@@ -111,7 +111,7 @@ function LoginScreen({ navigation }) {
                   navigation.navigate('ResetPasswordScreen');
                 }}
               >
-                Olvide mi contraseña
+                Olvidé mi contraseña
               </Text>
             </View>
           </View>
