@@ -20,6 +20,9 @@ export const signIn = (email, password) =>
 export const signUp = (email, dni, password) =>
   authApi.post('/users/signUp', { email, DNI: dni, password });
 
+export const resetPassword = email =>
+  authApi.post('/sendPasswordResetEmail', { email });
+
 export const refreshAccessToken = refreshToken =>
   authApi.post('/refreshToken', { refreshToken });
 

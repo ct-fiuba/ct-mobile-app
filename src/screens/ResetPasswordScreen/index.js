@@ -9,31 +9,40 @@ import {
   ActivityIndicator,
   TouchableWithoutFeedback,
   Keyboard,
+  Alert,
 } from 'react-native';
 
-import { signIn } from '../../services/CTAuthServerService';
-import { saveSession } from '../../services/LocalStorageService';
-
-import { useDispatch } from '../../contexts/AuthContext';
-import { actionCreators } from '../../contexts/AuthContext/reducer';
+import { resetPassword } from '../../services/CTAuthServerService';
 
 import styles from './styles';
 
-function LoginScreen({ navigation }) {
+function ResetPasswordScreen({ navigation }) {
   const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const dispatch = useDispatch();
+  const goToLoginScreen = () => {
+    Alert.alert(
+      'Reseteo de contraseña',
+      'Si existe una cuenta asociada al correo recibirá un email para cambiar la contraseña.',
+      [
+        {
+          text: 'Volver al Login',
+          onPress: () => {
+            navigation.navigate('LoginScreen');
+          },
+        },
+      ],
+      { cancelable: false }
+    );
+  };
 
-  const signInWithEmail = async () => {
+  const resetPasswordWithEmail = async () => {
     setLoading(true);
     setError('');
-    signIn(email, password)
-      .then(response => {
-        saveSession(response.data);
-        dispatch(actionCreators.setSession(response.data));
+    resetPassword(email)
+      .then(() => {
+        goToLoginScreen();
       })
       .catch(error => {
         console.error(error.response);
@@ -56,7 +65,7 @@ function LoginScreen({ navigation }) {
     <SafeAreaView style={{ flex: 1 }}>
       <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
         <KeyboardAvoidingView style={styles.center}>
-          <Text style={styles.title}>Contact Tracing</Text>
+          <Text style={styles.title}>Olvide mi contraseña</Text>
           <View style={styles.form}>
             <TextInput
               style={styles.input}
@@ -67,16 +76,6 @@ function LoginScreen({ navigation }) {
               textContentType="emailAddress"
               value={email}
               onChangeText={setEmail}
-            />
-            <TextInput
-              style={styles.input}
-              placeholder="Constraseña"
-              placeholderTextColor="#B1B1B1"
-              returnKeyType="done"
-              textContentType="newPassword"
-              secureTextEntry
-              value={password}
-              onChangeText={setPassword}
             />
           </View>
           {renderLoading()}
@@ -91,27 +90,20 @@ function LoginScreen({ navigation }) {
             {error}
           </Text>
           <View style={{ flexDirection: 'column' }}>
-            <TouchableOpacity style={{ margin: 10 }} onPress={signInWithEmail}>
-              <Text style={styles.button}>Iniciar sesión</Text>
+            <TouchableOpacity
+              style={{ margin: 10 }}
+              onPress={resetPasswordWithEmail}
+            >
+              <Text style={styles.button}>Enviar email</Text>
             </TouchableOpacity>
             <View style={{ margin: 10 }}>
               <Text
                 style={styles.button}
                 onPress={() => {
-                  navigation.navigate('SignUpScreen');
+                  navigation.navigate('LoginScreen');
                 }}
               >
-                Crear cuenta
-              </Text>
-            </View>
-            <View style={{ margin: 10 }}>
-              <Text
-                style={styles.button}
-                onPress={() => {
-                  navigation.navigate('ResetPasswordScreen');
-                }}
-              >
-                Olvidé mi contraseña
+                Volver al Login
               </Text>
             </View>
           </View>
@@ -121,4 +113,4 @@ function LoginScreen({ navigation }) {
   );
 }
 
-export default LoginScreen;
+export default ResetPasswordScreen;
