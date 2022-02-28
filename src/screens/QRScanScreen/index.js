@@ -106,19 +106,22 @@ function QRScanScreen({ navigation }) {
     try {
       setScanned(true);
       const parsedData = JSON.parse(data);
-      scan(
-        parsedData.id,
-        parsedData.isExit,
-        parsedData.estimatedVisitDuration
-      ).catch(error => openAlert('Error', error.response.data.reason));
-      openAlert(
-        'Éxito',
-        `La ${parsedData.isExit ? 'salida' : 'entrada'} de ${
-          parsedData.space
-        } de ${parsedData.name} se escaneó exitosamente`
-      );
+      const { id, isExit, estimatedVisitDuration, space, name } = parsedData;
+      try {
+        scan(id, isExit, estimatedVisitDuration).catch(error =>
+          openAlert('Error', error.response.data.reason)
+        );
+        openAlert(
+          'Éxito',
+          `La ${
+            isExit ? 'salida' : 'entrada'
+          } de ${space} de ${name} se escaneó exitosamente`
+        );
+      } catch {
+        openAlert('Error', 'Ocurrió un error al escanear, vuelva a internarlo');
+      }
     } catch {
-      openAlert('Error', 'Ocurrió un error al escanear, vuelva a internarlo');
+      openAlert('Error', 'QR Inválido.');
     }
   };
 
