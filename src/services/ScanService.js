@@ -70,7 +70,7 @@ const scanEntrance = async (spaceId, estimatedVisitDuration) => {
     await addExitTimestampToLastVisit(lastVisit);
   }
   const value = {
-    spaceId: spaceId,
+    spaceId,
     entranceTimestamp,
     userGeneratedCode: uuidv4(),
     ...(userInfo && {
@@ -81,7 +81,9 @@ const scanEntrance = async (spaceId, estimatedVisitDuration) => {
       }),
       illnessRecovered: userInfo.beenInfected,
       ...(userInfo.beenInfected && {
-        illnessRecoveredDate: anonymizeDate(parseDate(userInfo.medicalDischargeDate)),
+        illnessRecoveredDate: anonymizeDate(
+          parseDate(userInfo.medicalDischargeDate)
+        ),
       }),
     }),
   };
@@ -111,7 +113,7 @@ const scanExit = async (spaceId, estimatedVisitDuration) => {
   }
 
   const value = {
-    spaceId: spaceId,
+    spaceId,
     exitTimestamp,
     userGeneratedCode: closingLastVisit
       ? lastVisit.userGeneratedCode
@@ -124,7 +126,9 @@ const scanExit = async (spaceId, estimatedVisitDuration) => {
       }),
       illnessRecovered: userInfo.beenInfected,
       ...(userInfo.beenInfected && {
-        illnessRecoveredDate: anonymizeDate(parseDate(userInfo.medicalDischargeDate)),
+        illnessRecoveredDate: anonymizeDate(
+          parseDate(userInfo.medicalDischargeDate)
+        ),
       }),
     }),
   };
