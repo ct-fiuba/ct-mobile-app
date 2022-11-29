@@ -118,7 +118,10 @@ function QRScanScreen({ navigation }) {
           } de ${space} de ${name} se escaneó exitosamente`
         );
       } catch {
-        openAlert('Error', 'Ocurrió un error al escanear, vuelva a internarlo');
+        openAlert(
+          'Error',
+          'Ocurrió un error al escanear, vuelva a internarlo.'
+        );
       }
     } catch {
       openAlert('Error', 'QR Inválido.');

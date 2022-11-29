@@ -33,9 +33,8 @@ export const addExitTimestamp = visitInfo => async genuxToken =>
     headers: { 'genux-token': genuxToken },
   });
 
-export const getVaccines = async () => {
-  return userApi.get('/vaccines').then(res => res.data);
-};
+export const getVaccines = async () =>
+  userApi.get('/vaccines').then(res => res.data);
 
 export const sendCodes = codes =>
   Promise.all(

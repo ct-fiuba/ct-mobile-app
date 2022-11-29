@@ -45,7 +45,7 @@ function ModalDatePicker({
             testID="dateTimePicker"
             value={date}
             mode="date"
-            display="spinner"
+            // display="spinner"
             onChange={onAndroidChange}
           />
         )
