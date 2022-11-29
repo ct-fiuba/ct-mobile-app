@@ -44,9 +44,10 @@ function QRScanScreen({ navigation }) {
         const parts = r.split(':');
         const realRatio = parseInt(parts[0]) / parseInt(parts[1]);
         realRatios[r] = realRatio;
+
         // ratio can't be taller than screen, so we don't want an abs()
         const distance = screenRatio - realRatio;
-        distances[r] = realRatio;
+        distances[r] = distance;
         if (minDistance == null) {
           minDistance = r;
         } else if (distance >= 0 && distance < distances[minDistance]) {
@@ -75,7 +76,7 @@ function QRScanScreen({ navigation }) {
 
   useEffect(() => {
     (async () => {
-      const { status } = await Camera.requestPermissionsAsync();
+      const { status } = await Camera.requestCameraPermissionsAsync();
       setHasPermission(status === 'granted');
     })();
   }, []);
