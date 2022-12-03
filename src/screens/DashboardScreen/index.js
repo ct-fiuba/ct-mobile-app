@@ -90,7 +90,7 @@ function DashboardScreen({ navigation }) {
     sendCodes(codes)
       .then(_res => {
         dispatch(actionCreators.setInfected(true));
-        openAlert('Exito', 'Los codigos se compartieron exitosamente');
+        openAlert('Exito', 'Los códigos se compartieron exitosamente');
         setLoading(false);
       })
       .catch(error => {

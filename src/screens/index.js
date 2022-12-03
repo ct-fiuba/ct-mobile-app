@@ -3,7 +3,6 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 
 import DashboardScreen from './DashboardScreen';
-// import LoadingScreen from '../screens/LoadingScreen';
 import LoginScreen from './LoginScreen';
 import ResetPasswordScreen from './ResetPasswordScreen';
 import SignUpScreen from './SignUpScreen';
