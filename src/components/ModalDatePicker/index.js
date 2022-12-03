@@ -1,7 +1,9 @@
-import React, { useState, useMemo, useCallback } from 'react';
+import React, { useState, useMemo, useCallback, useEffect } from 'react';
 import { View, Platform } from 'react-native';
 import { Button, Modal } from 'react-native-magnus';
 import DateTimePicker from '@react-native-community/datetimepicker';
+
+import { parseDate } from '../../utils/dateFormat';
 
 import styles from './styles';
 
@@ -14,7 +16,11 @@ function ModalDatePicker({
   confirmText,
   cancelText,
 }) {
-  const [date, setDate] = useState(value ? new Date(value) : new Date());
+  const [date, setDate] = useState(value ? parseDate(value) : new Date());
+
+  useEffect(() => {
+    setDate(value ? parseDate(value) : new Date());
+  }, [value]);
 
   const onChange = useCallback(
     (event, selectedDate) => {
